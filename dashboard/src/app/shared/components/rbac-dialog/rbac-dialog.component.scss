@@ -1,0 +1,152 @@
+.wrapper {
+    color: #FFFFFF;
+    margin: 20px;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+::ng-deep {
+    ng-select {
+        padding-bottom: 0px !important;
+        border: none !important;
+        width: -webkit-fill-available;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .ng-placeholder {
+        margin-bottom: 5px;
+        position: relative !important;
+        font-family: 'Mulish', sans-serif;
+        font-style: normal;
+        color: #333333 !important;
+    }
+    .ng-value-container{
+        padding: 0px !important;
+    }
+    .ng-select.ng-select-single .ng-select-container .ng-clear-wrapper {
+        align-self: auto !important;
+        bottom: 0px !important;
+    }
+    .ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper{
+        align-self: auto !important;
+        bottom: 2px !important;
+    }
+    .ng-select .ng-has-value .ng-placeholder, .ng-select.ng-select-opened .ng-placeholder{
+    display: none !important;
+    }
+    .ng-dropdown-panel {
+        top: 100% !important;
+    }
+    .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+        background-color: white !important;
+    }
+}
+
+.welcometxt {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2rem;
+    color: #FFFFFF;
+}
+
+.tostyle {
+    font-family: 'Samarkan', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+}
+
+.text-center {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: #FFFFFF;
+}
+
+.justify-center {
+    gap: 2rem;
+}
+
+@media only screen and (max-width: 768px) {
+
+    /* For mobile phones: */
+    .text-center {
+        font-family: 'Poppins', sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 25px;
+        line-height: 54px;
+        color: #FFFFFF;
+    }
+
+    .selectRole {
+        font-family: 'Poppins', sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 15px;
+        line-height: 30px;
+    }
+}
+
+.role-info-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.display-flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.display-flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.submit-button img {
+    height: 55px;
+    width: 55px;
+}
+
+.submit-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.samikshadiv {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 60px
+}
+
+::ng-deep {
+    .ng-select.ng-select-focused .ng-select-container:after{
+        border-color: transparent;
+        border-width: 0px;
+    }
+        .ng-select .ng-select-container:after {
+        border-bottom : 0px solid rgba(0,0,0,0.42);
+    }
+}

@@ -1,0 +1,15 @@
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="col-start-4 col-end-5 download-button">
+            <app-popup-options [data]="reportsData" [reportName]="'nas_district_wise'" ></app-popup-options>
+        </div>
+    </div>
+    <div class="reports-row" >
+        <div class="row-wrapper grid grid-cols-1 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('nas_implementation_status', 'map')" id="map">
+                <app-nas-implementation-status #nasimplementationstatus
+                    (exportReportData)="csvDownload($event)"></app-nas-implementation-status>
+            </div>
+        </div>
+    </div>
+</div>

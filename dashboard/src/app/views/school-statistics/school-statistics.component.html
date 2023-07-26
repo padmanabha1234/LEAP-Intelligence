@@ -1,0 +1,15 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-6">
+            <p class="h4">School Statistics</p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms" (selectedTabChange)="onTabChanged($event)">
+        <mat-tab label="School Statistics" *ngIf="tabs.includes('Total Schools')">
+            <app-total-school-statistics *ngIf="selectedTabLabel === 'Total Schools'"></app-total-school-statistics>
+        </mat-tab>
+    </mat-tab-group>
+</div>

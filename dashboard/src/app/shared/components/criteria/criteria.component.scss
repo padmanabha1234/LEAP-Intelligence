@@ -1,0 +1,29 @@
+.rangeForm{
+    height: 26px;
+    padding-bottom: -20px;
+    width: 77px;
+    border: 1px solid;
+}
+
+button, button:hover {
+    color: white;
+    background-color: #4C30F5;
+}
+
+@media only screen and (max-width: 667px) {
+    .download-icon {
+        padding-top: 1rem;
+        display: block;
+    }
+    button {
+        display: none;
+        height: 37px;
+        width: 133px;
+        margin-top: -17px;
+        color: #4C30F5;
+    }
+
+}
+input {
+    text-align: center;
+}

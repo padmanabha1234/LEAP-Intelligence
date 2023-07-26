@@ -1,0 +1,16 @@
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="col-start-4 col-end-5 download-button">
+            <!-- <app-popup-options [data]="reportsData" [reportName]="'implementation_status'" ></app-popup-options> -->
+            <app-download-button [data]="reportsData"></app-download-button>
+        </div>
+    </div>
+    <div class="reports-row" >
+        <div class="row-wrapper grid grid-cols-1 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('implementation_status', 'map')" id="map">
+                <app-implementation-status #implementationstatus
+                    (exportReportData)="csvDownload($event)"></app-implementation-status>
+            </div>
+        </div>
+    </div>
+</div>

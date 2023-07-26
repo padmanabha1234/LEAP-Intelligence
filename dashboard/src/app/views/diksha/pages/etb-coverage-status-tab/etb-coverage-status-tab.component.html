@@ -1,0 +1,51 @@
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="col-span-2">
+            <app-filter-panel [filters]="filters" (filtersUpdated)="filtersUpdated($event)"
+                colSize="col-span-6"></app-filter-panel>
+        </div>
+        <div class="col-start-4 col-end-5 download-button">
+            <!-- <app-popup-options [data]="reportsData" [reportName]="'diksha_etb_coverage'" ></app-popup-options> -->
+            <app-download-button [data]="reportsData"></app-download-button>
+        </div>
+    </div>
+    <!-- <div class="reports-row"> -->
+    <!-- <div class="row-wrapper grid grid-cols-2 gap-4">
+
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('etb_coverage_status_bignumber', 'bigNumber')" id="bignumber">
+                <app-etb-coverage-status-bignumber #etbCoverageStatusBignumber
+                    (exportReportData)="csvDownload($event)"></app-etb-coverage-status-bignumber>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('etb_coverage_status', 'table')"
+                id="table1">
+                <app-etb-coverage-status #etbCoverageStatus
+                    (exportReportData)="csvDownload($event)"></app-etb-coverage-status>
+            </div>
+        </div> -->
+
+
+
+    <!-- </div> -->
+
+    <div class="reports-row">
+        <div *ngIf="checkReport('diksha_metrics', 'bigNumber1')" id="bignumber1">
+            <app-etb-bignumbers (exportReportData)="importBigNumberMetrics($event)"></app-etb-bignumbers>
+        </div>
+        <div class="row-wrapper grid grid-cols-5 gap-4">
+            <div class="col-span-2 xmd:col-span-1 bignumber-container" id="bignumber2"
+                *ngFor="let bigNumberData of bigNumberMetrics; let index = index">
+                <div *ngIf="checkReport('diksha_metrics', 'bigNumber'+(index+1))">
+                    <app-big-number [bigNumberReportData]="bigNumberData"></app-big-number>
+                </div>
+            </div>
+        </div>
+        <div class="row-wrapper grid ">
+            <div class="col-span-1 xmd:col-span-1 div-shadow"*ngIf="checkReport('etb_coverage_status', 'table')"
+            id="table1">
+            <app-etb-coverage-status #etbCoverageStatus
+            (exportReportData)="csvDownload($event)"></app-etb-coverage-status>
+            </div>
+        </div>
+    </div>
+</div>

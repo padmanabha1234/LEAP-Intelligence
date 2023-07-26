@@ -1,0 +1,19 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">Student Attendance</p>
+            <p class="program-desc">This program entails indicators to monitor reporting of attendance and presence of students in the jurisdiction.</p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms" (selectedTabChange)="onTabChanged($event)" appFullScreen>
+        <mat-tab label="Schools Reporting Student Attendance" *ngIf="tabs.includes('Schools Reporting Student Attendance')">
+            <app-student-attendance-compliance *ngIf="selectedTabLabel === 'Schools Reporting Student Attendance'"></app-student-attendance-compliance>
+        </mat-tab>
+        <mat-tab label="Average Students Present" *ngIf="tabs.includes('Average Students Present')">
+            <app-student-attendance-summary *ngIf="selectedTabLabel === 'Average Students Present'"></app-student-attendance-summary>
+        </mat-tab>
+    </mat-tab-group>
+</div>

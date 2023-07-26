@@ -1,0 +1,36 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">DIKSHA- ETB and eContent <em><small>(ETB : Energized Textbook)</small></em></p>
+            <p class="program-desc ">The Digital Infrastructure for Knowledge Sharing is an initiative of the National
+                Council of Educational Research and Training (Ministry of Education, Govt. of India). This platform
+                enables implementation of two key programs- NISHTHA and Energized Textbooks.</p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+
+        <mat-tab label='ETB Coverage Status' *ngIf="tabs.includes('ETB Coverage Status')">
+            <app-etb-coverage-status-tab
+                *ngIf="selectedTabLabel === 'ETB Coverage Status'"></app-etb-coverage-status-tab>
+        </mat-tab>
+
+        <mat-tab label='Content Coverage on QR' *ngIf="tabs.includes('Content Coverage on QR')">
+            <app-content-coverage-tab *ngIf="selectedTabLabel === 'Content Coverage on QR'"></app-content-coverage-tab>
+        </mat-tab>
+
+        <mat-tab label='Learning Sessions' *ngIf="tabs.includes('Learning Sessions')">
+            <app-learning-sessions-tab *ngIf="selectedTabLabel === 'Learning Sessions'"></app-learning-sessions-tab>
+        </mat-tab>
+
+        <mat-tab label='Learning Sessions on Potential Users'
+            *ngIf="tabs.includes('Learning Sessions on Potential Users')">
+            <app-learning-sessions-on-potential-users-tab
+                *ngIf="selectedTabLabel === 'Learning Sessions on Potential Users'"></app-learning-sessions-on-potential-users-tab>
+        </mat-tab>
+
+    </mat-tab-group>
+</div>

@@ -1,0 +1,54 @@
+<div class="col-span-full tab-wrapper">
+    <p class="tab-desc">
+        This report shows the % of teachers present in the school within the selected time duration on average
+    </p>
+
+    <div class="filter-row grid md:grid-cols-7 grid-cols-10">
+        <div class="time-series-filter md:col-span-2 col-span-4">
+            <app-time-series-filter-panel (timeSeriesUpdated)="timeSeriesUpdated($event)" [minDate]="minDate"
+                [maxDate]="maxDate" [defaultSelectedDays]="defaultSelectedDays"></app-time-series-filter-panel>
+        </div>
+        <div class="download-button md:col-start-6 md:col-end-8 col-start-8 col-end-11 flex">
+            <app-download-button [data]="schoolReportsData" pagereportName="school"></app-download-button>
+            &nbsp;
+            <app-download-button [data]="reportsData" ></app-download-button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-4">
+        <div class="xmd:col-span-2 col-span-4">
+            <app-breadcrumb-component></app-breadcrumb-component>
+        </div>
+        <div class="xmd:col-span-2 col-span-4 my-3 criteria-wrapper">
+            <app-criteria [criteriaConfig]="criteriaConfig"></app-criteria>
+        </div>
+    </div>
+
+    <div class="reports-row" >
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow" id="bignumber"
+                *ngIf="checkReport('tas_average_attendance_bignumber', 'bigNumber')">
+                <app-tas-average-attendance-bignumber  #averageAttendanceBigNumber></app-tas-average-attendance-bignumber>
+                <hr>
+                <app-tas-trendline-chart [chartConfig]="trendLineConfig" #TasTrendlineChartComponent></app-tas-trendline-chart>
+            </div>
+            <!-- <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('tas_average_attendance_map', 'map')" id="map">
+                <app-teacher-attendance-map #tasMap></app-teacher-attendance-map>
+            </div> -->
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('tas_average_attendance', 'table')" id="table1">
+                <app-tas-average-attendance #averageAttendance></app-tas-average-attendance>
+            </div>
+            <div class="col-span-2 xmd:col-span-2 div-shadow" *ngIf="checkReport('tas_average_attendance_barchart', 'barChart')" id="bar">
+                <app-tas-average-attendance-barchart #averageAttendanceBarchart></app-tas-average-attendance-barchart>
+            </div>
+            <!-- <div class="col-span-2 xmd:col-span-2 div-shadow"
+                *ngIf="checkReport('tas_average_attendance_rank', 'table')" id="table2">
+                <app-tac-average-attendance-rank #averageAttendanceRank></app-tac-average-attendance-rank>
+            </div> -->
+            <div class="col-span-2 xmd:col-span-2 div-shadow" *ngIf="checkReport('average_attendance_school', 'table')" id="table3">
+                <app-average-attendance-school-table #averageAttendanceSchool></app-average-attendance-school-table>
+            </div>
+        </div>
+    </div>
+</div>
