@@ -1,0 +1,17 @@
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-6 xmd:grid-cols-4">
+        <div class="col-span-5 xmd:col-span-3 lg:col-span-2">
+            <app-filter-panel [filters]="filters" (filtersUpdated)="filtersUpdated($event)"
+                colSize="col-span-12 xmd:col-span-6"></app-filter-panel>
+        </div>
+        <div class="col-start-6 col-end-7 xmd:col-start-4 xmd:col-end-5 download-button">
+            <app-download-button [data]="reportsData"></app-download-button>
+        </div>
+    </div>
+    <div class="reports-row">
+        <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('implementation_status', 'map')" id="map">
+            <app-implementation-status #implementationStatus
+                (exportReportData)="csvDownload($event)"></app-implementation-status>
+        </div>
+    </div>
+</div>

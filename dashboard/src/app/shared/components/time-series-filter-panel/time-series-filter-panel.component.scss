@@ -1,0 +1,39 @@
+.time-series-wrapper {
+    padding: 5px;
+    margin: 5px;
+    margin-bottom: 20px;
+}
+
+::ng-deep {
+    button.btn.btn-default.clear.ng-star-inserted {
+        svg {
+            display: none !important;
+        }
+
+        border-radius: 2px;
+    }
+
+}
+
+
+::ng-deep {
+
+    .mat-form-field-infix {
+        display: flex !important;
+    }
+
+
+}
+
+/* Disable padding for .mat-icon-button using ::ng-deep selector */
+::ng-deep .mat-icon-button {
+    padding-left: 15px !important;
+  }
+
+::ng-deep {
+
+    .mat-form-field-appearance-fill .mat-form-field-flex {
+        background-color: #fff;
+        align-items: center !important;
+    }
+}

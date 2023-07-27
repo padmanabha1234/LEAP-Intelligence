@@ -1,0 +1,30 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title ">NCERT Quiz</p>
+            
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+
+        <mat-tab label='Implementation Status' *ngIf="tabs.includes('Implementation Status')">
+            <app-implementation-status-tab
+                *ngIf="selectedTabLabel === 'Implementation Status'"></app-implementation-status-tab>
+        </mat-tab>
+
+
+        <mat-tab label='Participation Status' *ngIf="tabs.includes('Participation Status')">
+            <app-participation-status-tab
+                *ngIf="selectedTabLabel === 'Participation Status'"></app-participation-status-tab>
+        </mat-tab>
+
+        <mat-tab label='Quiz wise Status' *ngIf="tabs.includes('Quiz wise Status')">
+            <app-quiz-wise-status-tab
+                *ngIf="selectedTabLabel === 'Quiz wise Status'"></app-quiz-wise-status-tab>
+        </mat-tab>
+    </mat-tab-group>
+</div>

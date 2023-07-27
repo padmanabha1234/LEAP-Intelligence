@@ -1,0 +1,13 @@
+<div class="criteria-wrapper">
+    <form class="form" [formGroup]="criteriaForm" (ngSubmit)="onSubmit()">
+        <div class="row items-center">
+            <span class="rangeFrom">Units with {{criteriaConfig?.indicatorName}} between </span> &nbsp;
+            <input type="number" id="fromRange" class="rangeForm bg-gray-50 border border-gray-300" name="fromRange" formControlName="fromRange" [min]="criteriaConfig.minRange" [max]="criteriaConfig.maxRange">&nbsp;
+            <span > and </span>&nbsp;
+            <input type="number" class="rangeForm bg-gray-50 border border-gray-300" id="toRange" name="toRange" formControlName="toRange" [min]="criteriaConfig.minRange" [max]="criteriaConfig.maxRange">&nbsp;&nbsp;
+            <button class="btn" type="submit">Apply</button>
+            &nbsp;
+            <button class="btn" (click)="resetCriteria()">Clear</button>
+        </div>
+    </form>
+</div>

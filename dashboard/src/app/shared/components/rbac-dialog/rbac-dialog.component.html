@@ -1,0 +1,79 @@
+<div class="container-fluid" style=" height: 100%;">
+    <div class="justify-center">
+        <div class="row ">
+            <div class="col-2"></div>
+            <div class="col-2">
+                <div class="pull-right">
+                    <img src="../../../../assets/images/left-lines.png" alt="" srcset="">
+                </div>
+            </div>
+            <div class="col-4 text-center">
+                <span class="welcometxt">Welcome</span><br>
+                <span class="tostyle">to</span>
+            </div>
+            <div class="col-2">
+                <img src="../../../../assets/images/right-lines.png" alt="" srcset="">
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+    <div class="flex justify-center mb-2">
+        <div class="text-center">            
+            <span class="samikshadiv">VIDYA SAMIKSHA KENDRA</span><br>
+        </div>
+    </div>
+</div>
+<div class="role-info-div my-3">
+    <img heigt="50px" width="50px" [src]="'../../../assets/images/' + selectedRoleObject?.roleImageUrl"><br>
+    <span>{{'Hello ' + selectedRoleObject?.name}}</span>
+    <span> {{'Please select your ' + availableFilters}}</span>
+</div>
+
+<div class="grid grid-cols-6">
+    <div class="xmd:col-start-2 xmd:col-end-6 md:col-start-3 md:col-end-5 col-start-1 col-end-7 wrapper">
+        <form class="form theme-form" style="color:white" [formGroup]="rbacForm" (ngSubmit)="onSubmit()"
+            enctype="multipart/form-data">
+            <!-- <div class="display-flex-column" *ngFor="let filter of filters; let ind = index"
+                [attr.data-index]="ind">
+                <div class="display-flex-row grid grid-cols-3 gap-8">
+                    <label class="form-label col-span-1 my-3" [for]="filter?.name?.toLowerCase()">{{filter?.name}}</label>
+                    <ng-select class="col-span-2" [formControlName]="filter?.name?.toLowerCase()"
+                        [id]="filter?.name?.toLowerCase()" [placeholder]="'Select ' + filter?.name"
+                        (change)="changeFilter(filter)">
+                        <ng-option *ngFor="let option of filter?.options" [value]="option[filter.valueProp]">
+                            {{option[filter?.labelProp]}}
+                        </ng-option>
+                    </ng-select>
+                </div>
+                <span style="color:white" class=""
+                    *ngIf="f?.[filter?.name?.toLowerCase()]?.touched && f?.[filter?.name?.toLowerCase()]?.errors?.['required']">
+                    <small class="text-danger">{{'Please Select a ' + filter.name}}</small>
+                </span>
+            </div> -->
+            <div class="grid grid-cols-4" *ngFor="let filter of filters; let ind = index" [attr.data-index]="ind">
+                <div class="col-span-1 label-wrapper mb-3">
+                    <label class="form-label col-span-1 my-3"
+                        [for]="filter?.name?.toLowerCase()">{{filter?.name}}</label>
+                </div>
+                <div class="col-span-3 display-flex-column">
+                    <ng-select class="" [formControlName]="filter?.name?.toLowerCase()"
+                        [id]="filter?.name?.toLowerCase() + 'filter'" [placeholder]="'Select ' + filter?.name"
+                        (change)="changeFilter(filter)">
+                        <ng-option *ngFor="let option of filter?.options" [value]="updateForm(option, filter)">
+                            {{option[filter?.labelProp]}} 
+                        </ng-option>
+                    </ng-select>
+                    <span style="color:white" class=""
+                        *ngIf="f?.[filter?.name?.toLowerCase()]?.touched && f?.[filter?.name?.toLowerCase()]?.errors?.['required']">
+                        <small class="text-danger">{{'Please Select a ' + filter.name}}</small>
+                    </span>
+                </div>
+            </div>
+            <div class="submit-wrapper my-4">
+                <button class="submit-button" type="submit" id="submit" data-bs-original-title="" title="">
+                    <img src="../../../../assets/images/submit-arrow.png">
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

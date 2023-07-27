@@ -1,0 +1,125 @@
+<div class="metric-card-wrapper">
+  <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+    <div class="col-span-12">
+      <p class="program-title">School Infrastructure</p>
+      <p class="program-desc">
+        This program details the compliance of schools in the state with UDISE
+        infrastructure criteria
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+  <mat-tab-group
+    [selectedIndex]="tabIndex"
+    mat-align-tabs="start"
+    animationDuration="0ms"
+    (selectedTabChange)="onTabChanged($event)"
+    appFullScreen
+  >
+    <mat-tab label="School Infrastructure Summary">
+      <div class="filter-row grid md:grid-cols-4 grid-cols-10">
+        <div class="time-series-filter md:col-span-1 col-span-9">
+          <app-filter-panel
+            [filters]="filters"
+            (filtersUpdated)="filtersUpdated($event)"
+            colSize="col-span-12"
+          ></app-filter-panel>
+        </div>
+        <div
+          class="download-button md:col-start-2 md:col-end-5 col-start-10 col-end-11"
+        >
+          <app-download-button
+            [data]="schoolReportsData"
+            [pagereportName]="pagereportName"
+          ></app-download-button>
+        </div>
+      </div>
+      <div class="reports-row">
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+          <div
+            [class]="'col-span-2 xmd:col-span-' + (card.span || 1)"
+            *ngFor="let card of cards"
+          >
+            <ng-container *ngIf="card.type == 'number'">
+              <div
+                class="col-span-full tab-wrapper div-shadow"
+                *ngIf="card.value"
+              >
+                <app-big-number
+                  [bigNumberReportData]="card.value"
+                ></app-big-number>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="card.type == 'table'">
+              <div class="chart-wrapper div-shadow">
+                <div
+                  class="xs:col-span-full text-center py-2"
+                  *ngIf="tableReportData"
+                >
+                  <app-material-heat-chart-table
+                    [tableData]="card.value"
+                    [title]="card['title']"
+                  ></app-material-heat-chart-table>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Map View of School Infrastructure" *ngIf="hideTab !== true">
+      <div class="filter-row grid md:grid-cols-4 grid-cols-10">
+        <div class="time-series-filter md:col-span-1 col-span-9">
+          <app-filter-panel
+            [filters]="filters"
+            (filtersUpdated)="filtersUpdated($event)"
+            colSize="col-span-12"
+          ></app-filter-panel>
+        </div>
+        <div
+          class="download-button md:col-start-2 md:col-end-5 col-start-10 col-end-11"
+        >
+          <app-download-button
+            [data]="schoolReportsData"
+            [pagereportName]="pagereportName"
+          ></app-download-button>
+        </div>
+      </div>
+      <div class="reports-row">
+        <div class="col-span-full div-shadow">
+          <div *ngFor="let card of cards">
+            <ng-container *ngIf="card.type == 'map'">
+              <div class="col-span-full">
+                <ng-container
+                  *ngIf="
+                    card.value &&
+                      card.value['data'] &&
+                      card.value['data'].length > 0;
+                    else noMapData
+                  "
+                >
+                  <p class="text-center font-medium pt-4 filename">
+                    {{ "District wise Schools meeting 100% criteria" }}
+                  </p>
+                  <br />
+                  <app-leaflet-map
+                    [mapData]="card.value"
+                    level="district"
+                    (drillDownFilter)="drilldownData($event, card)"
+                    [drillDown]="drillDown"
+                    [drillDownLevel]="drillDownLevel"
+                  ></app-leaflet-map>
+                </ng-container>
+                <ng-template #noMapData>
+                  <div class="noData">No Data Found</div>
+                </ng-template>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,25 @@
+<div class="col-span-full tab-wrapper" appFullScreen>
+    <div class="grid grid-cols-6 ml-3 filter-row">
+        <ng-select class="col-span-6 xmd:col-span-3 lg:col-span-1" (change)="onSelectOption($event)" [placeholder]="'Select Year'">
+            <ng-option *ngFor="let option of academicYear" [value]="option">{{option}}</ng-option>
+        </ng-select>
+    </div>
+    <div class="reports-row">
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-big-number [bigNumberReportData]="bigNumberReports['scl_stat_total_school']"></app-big-number>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-total-schools  #totalschools (bigNumberReport)="appendBigNumber($event)" (exportMinmaxYear)="minMaxDate($event)"></app-total-schools>
+            </div>
+        </div>
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-category-wise-total-schools #categoryWiseTotalSchools (exportMinmaxYear)="minMaxDate($event)"></app-category-wise-total-schools>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-enrolment-wise-schools #enrolmentWiseSchools (exportMinmaxYear)="minMaxDate($event)"></app-enrolment-wise-schools>
+            </div>
+        </div>
+    </div>
+</div>

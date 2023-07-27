@@ -1,0 +1,37 @@
+<div class="metric-card-wrapper">
+  <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+    <div class="col-span-12">
+      <p class="program-title">Teacher Attendance</p>
+      <p class="program-desc">
+        This program entails indicators to monitor reporting of attendance and
+        presence of teachers in the jurisdiction.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+  <mat-tab-group
+    [selectedIndex]="tabIndex"
+    mat-align-tabs="start"
+    animationDuration="0ms"
+    (selectedTabChange)="onTabChanged($event)"
+    appFullScreen
+  >
+    <!-- <mat-tab label="Average Teachers Reporting Attendance" *ngIf="tabs.includes('Average Teachers Reporting Attendance')">
+            <app-teacher-attendance-compliance
+                *ngIf="selectedTabLabel === 'Average Teachers Reporting Attendance'"></app-teacher-attendance-compliance>
+        </mat-tab> -->
+    <mat-tab
+      label="Average Teachers Present"
+      *ngIf="tabs.includes('Average Teachers Present')"
+    >
+      <app-teacher-attendance-summary
+        *ngIf="selectedTabLabel === 'Average Teachers Present'"
+      ></app-teacher-attendance-summary>
+    </mat-tab>
+    <mat-tab label="Map View of Teacher Attendance">
+      <app-teacher-attendance-map *ngIf="selectedTabLabel === 'Map View of Teacher Attendance'"></app-teacher-attendance-map>
+    </mat-tab>
+  </mat-tab-group>
+</div>

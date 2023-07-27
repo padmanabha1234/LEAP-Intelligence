@@ -1,0 +1,32 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">Performance Grading Index <em><small>(PGI)</small></em></p>
+            <p class="program-desc ">The Performance Grading Index (PGI) is a tool to provide insights on the status of
+                school education in States and Union territories including key levers that drive their performance and
+                critical areas for improvement.</p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+
+        <mat-tab label='Implementation Status' *ngIf="tabs.includes('Implementation Status')">
+            <app-implementation-status-tab
+                *ngIf="selectedTabLabel === 'Implementation Status'"></app-implementation-status-tab>
+        </mat-tab>
+        <mat-tab label='State Wise Performance' *ngIf="tabs.includes('State Wise Performance')">
+            <app-state-wise-performance-tab
+                *ngIf="selectedTabLabel === 'State Wise Performance'"></app-state-wise-performance-tab>
+        </mat-tab>
+
+        <mat-tab label='District Wise Performance' *ngIf="tabs.includes('District Wise Performance')">
+            <app-district-wise-performance-tab
+                *ngIf="selectedTabLabel === 'District Wise Performance'"></app-district-wise-performance-tab>
+        </mat-tab>
+
+
+    </mat-tab-group>
+</div>

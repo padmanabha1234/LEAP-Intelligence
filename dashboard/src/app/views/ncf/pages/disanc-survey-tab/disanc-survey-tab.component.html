@@ -1,0 +1,24 @@
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="col-span-3">
+            <app-filter-panel [filters]="filters" (filtersUpdated)="filtersUpdated($event)"
+                colSize="col-span-4"></app-filter-panel>
+        </div>
+        <div class="col-start-4 col-end-5 download-button">
+            <!-- <app-popup-options [data]="reportsData" [reportName]="'ncf_progress_status'" ></app-popup-options> -->
+            <app-download-button [data]="reportsData"></app-download-button>
+        </div>
+    </div>
+    <div class="reports-row" >
+        <div class="row-wrapper grid grid-cols-1 gap-4">
+            <div class="col-span-2 xmd:col-span-2 div-shadow" *ngIf="checkReport('disanc_survey_map', 'map')" id="map">
+                <app-disanc-survey-map #DiSancSurveyMap
+                    (exportReportData)="csvDownload($event)"></app-disanc-survey-map>
+            </div>
+            <div class="col-span-2 xmd:col-span-2 div-shadow" *ngIf="checkReport('disanc_survey_bar', 'barChart')" id="bar">
+                <app-disanc-survey-bar #DiSancSurveyBar
+                    (exportReportData)="csvDownload($event)"></app-disanc-survey-bar>
+            </div>
+        </div>
+    </div>
+</div>

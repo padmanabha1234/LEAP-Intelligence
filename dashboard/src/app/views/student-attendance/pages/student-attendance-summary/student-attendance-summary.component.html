@@ -1,0 +1,42 @@
+<div class="col-span-full tab-wrapper">
+    <p class="tab-desc">
+        This report shows the % of students present (out of the ones for whom attendance is being reported) within the
+        selected time duration on an average.
+    </p>
+    <div class="filter-row grid md:grid-cols-4 grid-cols-10">
+        <div class="time-series-filter md:col-span-1 col-span-9">
+            <app-time-series-filter-panel (timeSeriesUpdated)="timeSeriesUpdated($event)" [minDate]="minDate"
+                [maxDate]="maxDate" [defaultSelectedDays]="defaultSelectedDays"></app-time-series-filter-panel>
+        </div>
+        <div class="download-button md:col-start-4 md:col-end-5 col-start-10 col-end-11">
+            <!-- <app-popup-options [data]="reportsData" [reportName]="'student_attendance_summary'" ></app-popup-options> -->
+            <app-download-button [data]="reportsData"></app-download-button>
+        </div>
+
+    </div>
+    <div class="reports-row">
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('sas_average_attendance_bignumber', 'bigNumber')" id="bignumber">
+                <app-sas-average-attendance-bignumber
+                    #averageAttendanceBignumber></app-sas-average-attendance-bignumber>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('sas_average_attendance', 'table')"
+                id="table">
+                <app-sas-average-attendance #averageAttendance></app-sas-average-attendance>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('sas_gender_wise_average_attendance', 'barChart')" id="chart">
+                <app-gender-wise-average-attendance #genderWiseAverageAttendance></app-gender-wise-average-attendance>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('sas_grade_wise_average_attendance', 'barChart')" id="chart">
+                <app-grade-wise-average-attendance #gradeWiseAverageAttendance></app-grade-wise-average-attendance>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('sas_average_attendance_rank', 'table')" id="table">
+                <app-sas-average-attendance-rank #averageAttendanceRank></app-sas-average-attendance-rank>
+            </div>
+        </div>
+    </div>
+</div>

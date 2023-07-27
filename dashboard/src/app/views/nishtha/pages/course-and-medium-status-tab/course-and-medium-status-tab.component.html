@@ -1,0 +1,19 @@
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="col-span-2">
+        </div>
+        <div class="col-start-4 col-end-5 download-button">
+            <!-- <app-popup-options [data]="reportsData" [reportName]="'nishtha_courses&medium_status'" ></app-popup-options> -->
+            <app-download-button [data]="reportsData"></app-download-button>
+        </div>
+    </div>
+    <div class="reports-row" >
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+
+            <div class="col-span-2 xmd:col-span-2 div-shadow" *ngIf="checkReport('course_and_medium_status', 'table')"
+                id="table">
+                <app-course-and-medium-status #courseAndMediumStatus></app-course-and-medium-status>
+            </div>
+        </div>
+    </div>
+</div>
