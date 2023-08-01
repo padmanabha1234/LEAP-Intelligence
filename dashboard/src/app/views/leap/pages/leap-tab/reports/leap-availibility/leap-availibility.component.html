@@ -1,0 +1,10 @@
+<div class="col-span-full">
+    <ng-container >
+        <p class="text-center font-medium py-2 filename" >{{title}}</p><br>
+        <!-- <sb-dashlet type="bar" [data]="reportData" [config]="config"></sb-dashlet> -->
+        <app-gauge [Height]="200" [gaugeData]="gaugeData"></app-gauge>
+    </ng-container>
+    <!-- <div class="noData" *ngIf="!(reportData?.values && reportData?.values?.length > 0)">
+        No Data Found
+    </div> -->
+</div>

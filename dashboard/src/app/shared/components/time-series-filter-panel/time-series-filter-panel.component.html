@@ -1,0 +1,25 @@
+<!-- <div class="time-series-wrapper">
+    <div class="relative" id="timeSeries">
+        <input class="w-full px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:border-indigo-500"
+            type="text" ngxDaterangepickerMd [(ngModel)]="selected" placeholder="Choose date"  (ngModuleChange)="changeDate($event)"
+            [showClearButton]="true" [minDate]="minDate" [maxDate]="maxDate"  />
+        <button class="absolute inset-y-0 right-0 flex items-center px-3 py-2 bg-indigo-500 text-white rounded-r-lg"
+           id="calenderButton" >
+            <i class="fa fa-calendar" id="calenderIcon"></i>
+        </button>
+    </div>
+</div> -->
+<div class="container-fluid">
+    <mat-form-field appearance="fill" class="d-block">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+            <input matStartDate formControlName="start" placeholder="Start date">
+            <input matEndDate formControlName="end" placeholder="End date">
+        </mat-date-range-input>
+        <mat-icon matDatepickerToggleIcon (click)="clearDateRange()" style="color: red;">clear</mat-icon>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-error *ngIf="range.controls['start'].hasError('matStartDateInvalid')">Invalid start date</mat-error>
+        <mat-error *ngIf="range.controls['end'].hasError('matEndDateInvalid')">Invalid end date</mat-error>
+    </mat-form-field>
+</div>

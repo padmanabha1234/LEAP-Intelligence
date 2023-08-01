@@ -1,0 +1,57 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+<!--            <p class="program-title">Title</p>-->
+<!--            <p class="program-desc">Description</p>-->
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="col-span-2">
+            <app-filter-panel [filters]="filters" (filtersUpdated)="filtersUpdated($event)" colSize="col-span-6"></app-filter-panel>
+        </div>
+        <!--<div class="col-start-4 col-end-5 download-button" >
+            <app-popup-options [data]="reportsData" [reportName]="'review_meetings'" ></app-popup-options>
+        </div>-->
+    </div>
+    <div class="reports-row">
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngFor="let card of cards">
+                <ng-container [ngSwitch]="card.type">
+                    <ng-container *ngSwitchCase="'number'">
+                        <div class="col-span-full tab-wrapper" *ngIf="card.value">
+                            <app-big-number [bigNumberReportData]="card.value"></app-big-number>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'map'">
+                        <div class="col-span-full">
+                            <ng-container *ngIf="(card.value && card.value['data'] && card.value['data'].length > 0); else noMapData">
+                                <p class="text-center font-medium py-2 filename" >{{'title'}}</p><br>
+                                <app-leaflet-map [mapData]="card.value" level="district" ></app-leaflet-map>
+                            </ng-container>
+                            <ng-template #noMapData>
+                                <div class="noData">
+                                    No Data Found
+                                </div>
+                            </ng-template>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'table'">
+                        <div class="chart-wrapper">
+                            <div class="xs:col-span-full text-center py-2" *ngIf="tableReportData">
+                                <app-material-heat-chart-table [tableData]="card.value" [title]="card['title']"></app-material-heat-chart-table>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'barChart'">
+                        <div class="chart-wrapper">
+                            Bar Graph
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

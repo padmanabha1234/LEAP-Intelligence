@@ -1,0 +1,23 @@
+<!-- <div class="button-container">
+    <button class="btn" (click)="onDownload()">
+        <span class="button-text">Download Report</span>
+    </button>
+    <i class="download-icon fa fa-download"></i>
+</div> -->
+<div *ngIf='(pagereportName == "student_assessment") || (pagereportName == "teachers_present") ||( pagereportName == "school_infra") ||( pagereportName == "school_progression") || (pagereportName == "school"); else templateName'>
+    <button class="btn" (click)="onDownload()" id="downloadButton">
+        <span class="button-text">School Report</span>
+    </button>
+    <!-- <i class="download-icon fa fa-2x fa-download"></i> -->
+</div>
+
+<ng-template #templateName>
+    <button class="btn" (click)="onDownload()" id="downloadButton">
+        <span class="button-text">Unit level report</span>
+    </button>
+</ng-template>
+
+
+<div class="alert" [class.visible]="isVisible"> 
+    No Data Found
+  </div>

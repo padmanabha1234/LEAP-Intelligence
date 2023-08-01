@@ -1,0 +1,21 @@
+{
+  "message": "Metric data returned successfully",
+  "data": [
+    {
+      "programName": "Leap",
+      "tooltip": "Leap for Production",
+      "navigationUrl": "/leap",
+      "imageUrl": "oee.png",
+      "programID": "leap",
+      "orderBy": "1"
+    },
+    {
+      "programName": "Alerts",
+      "tooltip": "Alerts",
+      "navigationUrl": "/alert",
+      "imageUrl": "alerts.png",
+      "programID": "alert",
+      "orderBy": "2"
+    }
+  ]
+}

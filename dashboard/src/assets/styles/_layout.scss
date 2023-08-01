@@ -1,0 +1,118 @@
+.app-nav-bar {
+    height: $app-nav-bar-height !important;
+    box-shadow: 0 1px 3px #aaa;
+    position: fixed;
+    width: 100%;
+    top: 2.8rem !important;
+    z-index: 2;
+}
+
+@media(max-width: 400px) {
+    .app-nav-bar{
+        
+        top: 4.2rem !important;
+    }
+}
+
+.app-side-nav {
+    margin-top: calc(10px + #{$app-nav-bar-height});
+    height: calc(100vh - #{$app-nav-bar-height});
+    width: $app-side-nav-width;
+    box-shadow: 1px 3px 5px #aaa;
+    position: fixed;
+    overflow-y: auto;
+    z-index: 1;
+    background: #fff;
+
+    .menu {
+        .menu-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+
+            .inside {
+                text-align: left;
+                width: 100%;
+            }
+        }
+    }
+}
+
+.app-content-wrapper {
+    padding-top: $app-nav-bar-height;
+    padding-left: $app-side-nav-width;
+
+    .app-content {
+        padding: 1.5rem;
+    }
+}
+
+// .tab-wrapper {
+//     min-height: calc(100vh - calc($app-nav-bar-height + 16.6rem));
+//     max-height: calc(100vh - calc($app-nav-bar-height + 16.6rem));
+// }
+
+.filter-row{
+    // min-height: 10%;
+    max-height: 10%
+}
+
+.reports-row {
+    display: flex;
+    flex-direction: column;
+    min-height: 90%;
+    max-height: 90%;
+}
+
+// .row-wrapper {
+//     flex-grow: 1;
+//     min-height: 45rem;
+//     // max-height: 50%;
+// }
+
+.bignumber-container {
+    box-shadow: 0px 7.16865px 19.7138px rgba(0, 0, 0, 0.16);
+    border-radius: 10px;
+    margin: 10px;
+    
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background: #fff;
+}
+
+.div-shadow{
+    box-shadow: 0px 7.16865px 19.7138px rgba(0, 0, 0, 0.16);
+    border-radius: 10px;
+    margin: 10px;
+    min-height: 15rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background: #fff;
+}
+
+.dropdown {
+    bottom: calc(5px - #{$app-nav-bar-height});
+}
+
+@screen max-xmd {
+    .app-side-nav {
+        display: none;
+    }
+
+    .app-content-wrapper {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .app-content {
+        padding: 1rem 0.5rem !important;
+    }
+}
+
+::ng-deep {
+    .mat-sort-header-container {
+        justify-content: center !important;
+    }
+}

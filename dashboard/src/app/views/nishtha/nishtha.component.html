@@ -1,0 +1,40 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">NISHTHA</p>
+            <p class="program-desc">NISHTHA is a capacity building programme for "Improving Quality of School Education
+                through Integrated Teacher Training". It aims to build competencies among all the teachers and school
+                principals at the elementary stage. NISHTHA is the world's largest teachers' training program.</p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+
+        <mat-tab label='Implementation Status' *ngIf="tabs.includes('Implementation Status')">
+            <app-implementation-status-tab
+                *ngIf="selectedTabLabel === 'Implementation Status'"></app-implementation-status-tab>
+        </mat-tab>
+
+        <mat-tab label='Courses and Medium Status' *ngIf="tabs.includes('Courses and Medium Status')">
+            <app-course-and-medium-status-tab
+                *ngIf="selectedTabLabel === 'Courses and Medium Status'"></app-course-and-medium-status-tab>
+        </mat-tab>
+
+        <mat-tab label='% against Potential Base' *ngIf="tabs.includes('% against Potential Base')">
+            <app-potential-base-tab *ngIf="selectedTabLabel === '% against Potential Base'"></app-potential-base-tab>
+        </mat-tab>
+
+        <mat-tab label='District Wise Status' *ngIf="tabs.includes('District Wise Status')">
+            <app-district-wise-status-tab
+                *ngIf="selectedTabLabel === 'District Wise Status'"></app-district-wise-status-tab>
+        </mat-tab>
+
+        <mat-tab label='Course Wise Status' *ngIf="tabs.includes('Course Wise Status')">
+            <app-course-wise-status-tab *ngIf="selectedTabLabel === 'Course Wise Status'"></app-course-wise-status-tab>
+        </mat-tab>
+
+    </mat-tab-group>
+</div>

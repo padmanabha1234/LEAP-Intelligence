@@ -1,0 +1,36 @@
+<div class="col-span-full tab-wrapper" appFullScreen>
+    <div class="grid grid-cols-6 ml-3 filter-row">
+        <ng-select class="col-span-6 xmd:col-span-3 lg:col-span-1" (change)="onSelectOption($event)" placeholder="Select Year">
+            <ng-option *ngFor="let option of academicYear" [value]="option">{{option}}</ng-option>
+        </ng-select>
+        <div class="grid grid-cols-12 button-right">
+            <app-download-button [data]="csvReportData?.values" [fileName]="fileName" [reportType]="'dashletBar'"></app-download-button>
+        </div>
+    </div>
+    <div class="reports-row">
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="bigNumberReports['students_enrolled_and_cwsn_enrollment']">
+                <app-big-number [bigNumberReportData]="bigNumberReports['students_enrolled_and_cwsn_enrollment']"></app-big-number>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-total-students-enrolled #totalStudentsEnrolled (bigNumberReport)="appendBigNumber($event)" (exportMinmaxYear)="minMaxDate($event)"></app-total-students-enrolled>
+                <app-students-and-cwsn-enrollment #studentsAndCwsnEnrollment (bigNumberReport)="appendBigNumber($event)" (exportMinmaxYear)="minMaxDate($event)"></app-students-and-cwsn-enrollment>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="bigNumberReports['total_students_enrolled']">
+                <app-big-number [bigNumberReportData]="bigNumberReports['total_students_enrolled']"></app-big-number>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-gender-wise-student-enrollment #genderWiseStudentEnrollment (exportMinmaxYear)="minMaxDate($event)"></app-gender-wise-student-enrollment>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-grade-category-wise-enrollment #gradeCatWiseEnrollment (exportMinmaxYear)="minMaxDate($event)"></app-grade-category-wise-enrollment>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-student-category-wise-enrollment #studentCatWiseEnrollment (exportMinmaxYear)="minMaxDate($event)"></app-student-category-wise-enrollment>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow">
+                <app-rank-students-and-cwsn-enrollment #rankStudentsAndCwsnEnrollment (exportMinmaxYear)="minMaxDate($event)"></app-rank-students-and-cwsn-enrollment>
+            </div>
+        </div>
+    </div>
+</div>

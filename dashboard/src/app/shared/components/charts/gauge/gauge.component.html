@@ -1,0 +1,14 @@
+<div id="card">
+    <div id="apexChart" *ngIf="chartOptions">
+      <apx-chart 
+        [series]="chartOptions?.series"
+        [chart]="chartOptions.chart"
+        [plotOptions]="chartOptions.plotOptions"
+        [labels]="chartOptions.labels"
+        [stroke]="chartOptions.stroke"
+        [fill]="chartOptions.fill"
+      ></apx-chart>
+      <!-- <p class="title text-center">{{ gaugeData.options.title }}</p> -->
+    </div>
+</div>
+  

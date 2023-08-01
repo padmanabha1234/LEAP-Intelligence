@@ -1,0 +1,49 @@
+<div class="col-span-full tab-wrapper">
+  <p class="tab-desc">
+    This report shows the % of teachers present in the school (out of the ones
+    who have reported their attendance) within the selected time duration on an
+    average.
+  </p>
+  <div class="filter-row grid xmd:grid-cols-4 grid-cols-10">
+    <div class="time-series-filter xmd:col-span-2 md:col-span-1 col-span-10">
+      <app-time-series-filter-panel
+        (timeSeriesUpdated)="timeSeriesUpdated($event)"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        [defaultSelectedDays]="defaultSelectedDays"
+      ></app-time-series-filter-panel>
+    </div>
+    <div class="breadcrumbs-wrapper xmd:col-start-3 xmd:col-end-5 col-span-10">
+      <app-breadcrumb-component></app-breadcrumb-component>
+    </div>
+    <!-- <div
+    class="download-button md:col-start-2 md:col-end-5 col-start-10 col-end-11"
+  >
+    <app-download-button
+      [data]="schoolReportsData"
+      [pagereportName]="pagereportName"
+    ></app-download-button>
+    <app-download-button [data]="reportsData"></app-download-button>
+  </div> -->
+  </div>
+
+  <div class="col-span-full div-shadow">
+    <ng-container *ngIf="reportData?.data && reportData?.data?.length > 0">
+      <p class="text-center font-medium pt-4 filename">{{ title }}</p>
+      <br />
+      <app-leaflet-map
+        [mapData]="reportData"
+        level="district"
+        (drillDownFilter)="drilldownData($event)"
+        [drillDownLevel]="drillDownLevel"
+        [drillDown]="drillDown"
+      ></app-leaflet-map>
+    </ng-container>
+    <div
+      class="noData"
+      *ngIf="!(reportData?.data && reportData?.data?.length > 0)"
+    >
+      No Data Found
+    </div>
+  </div>
+</div>

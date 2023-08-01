@@ -1,0 +1,34 @@
+<div class="col-span-full tab-wrapper">
+    <p class="tab-desc">
+        This report shows the % of teachers reporting their attendance within the selected time duration on an average.
+    </p>
+    <!-- <app-breadcrumb-component></app-breadcrumb-component> -->
+    <div class="filter-row grid md:grid-cols-4 grid-cols-10">
+        <div class="time-series-filter md:col-span-1 col-span-9">
+            <app-time-series-filter-panel (timeSeriesUpdated)="timeSeriesUpdated($event)" [minDate]="minDate"
+                [maxDate]="maxDate" [defaultSelectedDays]="defaultSelectedDays"></app-time-series-filter-panel>
+        </div>
+        <div class="download-button md:col-start-4 md:col-end-5 col-start-10 col-end-11">
+            <!-- <app-pdf-download [reportName]="'teacher_attendance_compliance'" ></app-pdf-download> -->
+            <app-popup-options [data]="reportsData" [reportName]="'teacher_attendance_compliance-wise'"></app-popup-options>
+        </div>
+    </div>
+    <div class="reports-row">
+        <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('tac_average_attendance_compliance_bignumber', 'bigNumber')" id="bignumber">
+                <app-tac-attendance-compliance-bignumber
+                    #averageAttendanceComplianceBigNumber></app-tac-attendance-compliance-bignumber>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('tac_average_attendance_compliance', 'table')" id="table1">
+                <app-tac-average-attendance-compliance
+                    #averageAttendanceCompliance></app-tac-average-attendance-compliance>
+            </div>
+            <div class="col-span-2 xmd:col-span-1 div-shadow"
+                *ngIf="checkReport('tac_attendance_compliance_rank', 'table')" id="table2">
+                <app-tac-attendance-compliance-rank #attenadanceComplianceRank></app-tac-attendance-compliance-rank>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="col-span-full tab-wrapper">
+            <div class="filter-row grid grid-cols-4">
+                <div class="col-span-2">
+                <app-filter-panel [filters]="filters" (filtersUpdated)="filtersUpdated($event)" colSize="col-span-6"></app-filter-panel></div>
+                <div class="col-start-4 col-end-5 download-button">
+                    <!-- <app-popup-options [data]="reportsData" [reportName]="'diksha_learning_sessions'" ></app-popup-options> -->
+                    <app-download-button [data]="reportsData"></app-download-button>
+                </div>
+            </div>
+            <div class="reports-row" >
+                <div class="row-wrapper grid grid-cols-2 gap-4">
+                
+                    <div class="col-span-2 xmd:col-span-1 div-shadow" *ngIf="checkReport('learning_sessions', 'barChart')" id="chart">
+                        <app-learning-sessions #learningSessions (exportReportData)="csvDownload($event)"></app-learning-sessions>
+                    </div></div>
+            </div>
+        </div>

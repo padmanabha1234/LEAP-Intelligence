@@ -1,0 +1,73 @@
+<div class="container-fluid background" id="background">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12 ">
+            <div class="logo d-flex">
+                <img [src]="'./../../../../../assets/images/' + loginObj.logoURL" class="logoImg mr-3">
+                <p>{{loginObj.title}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="logoText"><br>
+                        <!-- <p>{{stateName}}</p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card-pf">
+                        <div id="kc-content-wrapper">
+
+                            <div>
+                                <div class="alert alert-error d-flex" *ngIf="error">
+                                    <span class="pficon fa fa-times-circle fa-2x text-danger">{{"Invalid
+                                        Credentials"}}</span>
+
+                                    <span class="kc-feedback-text ml-2"></span>
+                                </div>
+                                <form class="form" [formGroup]="LoginForm" (ngSubmit)="onSubmit()" id="kc-form-login1"
+                                    autocomplete="off">
+                                    <label>User ID</label><br />
+                                    <input id="username1" class="login-field" formControlName="userId"
+                                        placeholder="Enter your user ID" type="text" name="username" tabindex="1">
+                                    <br /><br />
+                                    <label>Password</label>
+                                    <input type="password" id="password1" class="login-field" formControlName="password"
+                                        placeholder="Enter your password" name="password" tabindex="2">
+                                    <br /><br />
+                                    <br />
+                                    <button [ngClass]="LoginForm.valid ? 'valid' : ''" class="submit" type="submit" id="login" name="login" value="Login"
+                                        tabindex="3">Login</button>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <div class="infoText" style="color: white; padding: 0px 20px 0px 0px;">
+                        <h6
+                            style="color:white; font-size: 16px; font-weight: bold;line-height:1.4em; margin-top: 20px;">
+                            {{loginObj.tagLine}}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12">
+            <div class="backImg">
+                <img [src]="'./../../../../../assets/images/' + loginObj.imageURL">
+            </div>
+
+        </div>
+    </div>
+    <div>
+
+    </div>
+</div>
