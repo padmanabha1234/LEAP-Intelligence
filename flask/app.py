@@ -1,27 +1,211 @@
-import json
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-
+from flask_cors import CORS
+from flask import Flask, request, session, redirect, url_for, render_template, flash
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from flask import Flask, request, redirect, url_for, render_template, jsonify
-import pandas as pd
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
-
 from MergeFiles import merge_csv_files
+import json, psycopg2, psycopg2.extras, re, smtplib, pandas as pd, os, configparser
+
+configuration_path = os.path.dirname(os.path.abspath(__file__))+'/config.ini'
+config = configparser.ConfigParser()
+config.read(configuration_path)
+print(configuration_path)
 
 df = []
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes in the app
+
+app.secret_key = 'cairocoders-ednalan'
+ 
+DB_HOST = config['CREDs']['DB_HOST']
+DB_NAME = config['CREDs']['DB_NAME']
+DB_USER = config['CREDs']['DB_USERNAME']
+DB_PASS = config['CREDs']['DB_PASSWORD']
+ 
+conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+
+
+def create_user_table(conn):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+					fullname VARCHAR(50) NOT NULL,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(100) NOT NULL,
+                    companyname VARCHAR(50)             
+                )
+            """)
+        conn.commit()
+    except psycopg2.Error as e:
+        print("Error creating user table:", e)
+
+def send_email_notification(recipient_email, username):
+    sender_email = config['CREDs']['SENDER_EMAIL']
+    sender_password = config['CREDs']['SENDER_PASSWORD'] 
+
+    subject = 'Registration Successful'
+    body = f'Hello {username} ,\n\nThank you for registering on our website. Your account has been successfully created.'
+
+    # Set up the SMTP server and login
+    smtp_server = 'smtp.gmail.com' 
+    smtp_port = 587 
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Use TLS encryption for security
+        server.login(sender_email, sender_password)
+    except Exception as e:
+        print("Error: Unable to connect to the SMTP server.")
+        print(e)
+        return
+
+    # Create the email message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+
+    # Attach the body of the email
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        # Send the email
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+        print("Notification email sent successfully.")
+    except Exception as e:
+        print("Error: Unable to send the notification email.")
+        print(e)
+    finally:
+        server.quit()
+
+@app.route('/')
+def home():
+    # Check if user is logged in
+    if 'loggedin' in session:
+        # User is logged in, redirect to the desired URL
+        return redirect(config['CREDs']['DOMAIN_NAME'])
+
+    # User is not logged in, redirect to login page
+    return redirect(url_for('login'))
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+   
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        print(password)
+ 
+        # Check if account exists using MySQL
+        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        # Fetch one record and return result
+        account = cursor.fetchone()
+ 
+        if account:
+            password_rs = account['password']
+            print(password_rs)
+            # If account exists in users table in out database
+            if check_password_hash(password_rs, password):
+                # Create session data, we can access this data in other routes
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['username'] = account['username']
+                # Redirect to home page
+                return redirect(url_for('home'))
+            else:
+                # Account doesnt exist or username/password incorrect
+                flash('Incorrect username/password')
+        else:
+            # Account doesnt exist or username/password incorrect
+            flash('Incorrect username/password')
+ 
+    return render_template('login.html')
+  
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    create_user_table(conn)
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        # Create variables for easy access
+        fullname = request.form['fullname']
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        companyname = request.form.get('companyname')
+    
+        _hashed_password = generate_password_hash(password)
+ 
+        #Check if account exists using MySQL
+        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        account = cursor.fetchone()
+        print(account)
+        # If account exists show error and validation checks
+        if account:
+            flash('Account already exists!')
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            flash('Invalid email address!')
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            flash('Username must contain only characters and numbers!')
+        elif not username or not password or not email:
+            flash('Please fill out the form!')
+        else:
+            # Account doesnt exists and the form data is valid, now insert new account into users table
+            cursor.execute("INSERT INTO users (fullname, username, password, email, companyname) VALUES (%s,%s,%s,%s,%s)", (fullname, username, _hashed_password, email,companyname))
+            conn.commit()
+            flash('You have successfully registered!')
+            send_email_notification('padmanabha.mjk1@gmail.com',username)
+        return redirect(url_for('login'))
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        flash('Please fill out the form!')
+    # Show registration form with message (if any)
+    return render_template('register.html')
+   
+   
+@app.route('/logout')
+def logout():
+    # Remove session data, this will log the user out
+   session.pop('loggedin', None)
+   session.pop('id', None)
+   session.pop('username', None)
+   # Redirect to login page
+   return redirect(url_for('login'))
+  
+@app.route('/profile')
+def profile(): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+   
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        cursor.execute('SELECT * FROM users WHERE id = %s', [session['id']])
+        account = cursor.fetchone()
+        # Show the profile page with account info
+        return render_template('profile.html', account=account)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
+
 # Placeholder for OEE values
 oee_values = []  # This should be replaced with a more robust solution like a database or a message queue
 final_values = []
 
 
-@app.route('/reset')
+@app.route('/flask/reset')
 def reset():
     global oee_values
     oee_values = calculate_oee(df)
 
 
-@app.route('/get_oee_value')
+@app.route('/flask/get_oee_value')
 def get_oee_value():
     machine = request.args.get('machine')
     shift = request.args.get('shift')
@@ -67,9 +251,9 @@ def calculate_oee(df):
     return oee_values
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/flask/upload', methods=['POST'])
 def upload_file():
-    path = '/home/vanitha/Downloads/Latest_28_Jun_4_48pm/Latest_28_Jun_4_48pm/data'
+    path = config['CREDs']['DATA_LOC']
     global df, oee_values, final_values
     df = merge_csv_files(path)
     final_values = df
@@ -85,7 +269,7 @@ def upload_file():
     return redirect(url_for('index'))
 
 
-@app.route('/get_dropdown_data')
+@app.route('/flask/get_dropdown_data')
 def get_dropdown_data():
     global df
     dates = df['date'].unique().tolist()
@@ -99,7 +283,7 @@ def get_dropdown_data():
     return jsonify(dates=dates, machines=machines, shifts=shifts, times=times)
 
 
-@app.route('/get_anomaly_values', methods=['GET'])
+@app.route('/flask/get_anomaly_values', methods=['GET'])
 def get_anomaly_values():
     global final_values
     # print('Anomaly')
@@ -115,7 +299,7 @@ def get_anomaly_values():
     return jsonify(low=mean - threshold, high=mean + threshold)
 
 
-@app.route('/get_correlation_values', methods=['GET'])
+@app.route('/flask/get_correlation_values', methods=['GET'])
 def get_correlation_values():
     final_values1 = final_values[
         ['plannedproductiontime', 'actualproductiontime', 'totaldowntime', 'totalproducedunits',
@@ -139,7 +323,7 @@ def get_correlation_values():
     return jsonify(correlation_values)
 
 
-@app.route('/trend_check', methods=['POST'])
+@app.route('/flask/trend_check', methods=['POST'])
 def trend_check():
     # Get form data
     param = request.form.get('param')
@@ -185,7 +369,7 @@ def trend_check():
     return jsonify(results)
 
 
-@app.route('/forecasting', methods=['GET'])
+@app.route('/flask/forecasting', methods=['GET'])
 def forecasting():
     global final_values
     global df
@@ -222,14 +406,6 @@ def forecasting():
             'Date': train_data.index[-2 * forecast_steps:],
             'Actual Values': train_data.values[-2 * forecast_steps:]
         })
-        '''
-        print('Test Data Values',test_data.values,'Forecasted Values', forecast.values)
-        result_df = pd.DataFrame({
-            'Date': test_data.index,
-            'Actual Values': test_data.values,
-            'Forecasted Values': forecast.values
-        })
-        '''
         forecast_df = pd.DataFrame({
             'Date': forecast_dates,
             'Forecasted Values': forecast.values
@@ -250,7 +426,7 @@ def forecasting():
         # Return an error response if an exception occurs
         return jsonify({'error': str(e)})
 
-@app.route('/save_payload', methods=['POST'])
+@app.route('/flask/save_payload', methods=['POST'])
 def save_payload():
     payload = request.get_json()  # Get the payload as a JSON object
 
@@ -261,10 +437,10 @@ def save_payload():
     return jsonify({'message': 'Payload received and saved as JSON file'})
 
 
-@app.route('/')
+@app.route('/flask/')
 def index():
     return render_template('index.html')
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    app.run(debug=True, host='0.0.0.0', port=5002)

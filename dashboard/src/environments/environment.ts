@@ -1,6 +1,8 @@
 export const environment = {
   production: false,
-  apiURL: 'https://cqube-poc-tibil.tibilprojects.com/api/queryBuilder',
+  apiURL: 'https://leap-intelligence.tibilprojects.com/api/queryBuilder',
+  
+
   config: "VSK",
   stateCode: "AP",
   numberFormat: {
@@ -10,5 +12,6 @@ export const environment = {
     }
   },
   google_analytics_tracking_id: "NA",
-  flaskAPI :"https://cqube-poc-tibil.tibilprojects.com/flask",
+  flaskAPI :"https://leap-intelligence.tibilprojects.com/flask/",
+
 };

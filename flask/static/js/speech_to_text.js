@@ -86,7 +86,7 @@ startButton.addEventListener('click', async () => {
     startButton.style.backgroundColor = '#e74c3c';
     startButton.style.borderColor = '#c94f42';
     const microphoneIcon = startButton.querySelector('.microphone-icon');
-    microphoneIcon.src = '/static/microphone_icon.png';
+    microphoneIcon.src = '/flask/static/images/microphone_icon.png';
 
     // Automatically stop recording after 10 seconds
     setTimeout(() => {
@@ -105,7 +105,7 @@ function stopRecording() {
         startButton.style.backgroundColor = '#0dab05';
     startButton.style.borderColor = '#2bc03c';
     const microphoneIcon = startButton.querySelector('.microphone-icon');
-    microphoneIcon.src = '/static/mic.png';
+    microphoneIcon.src = '/flask/static/images/mic.png';
   }
 }
 
@@ -176,8 +176,6 @@ const submitKeywords = ['submit', 'submit form', 'submit data'];
 
 
 function displayResult(data) {
-//    const resultDiv = document.getElementById('result');
-//    resultDiv.textContent = JSON.stringify(data, null, 2);
 
     // Get the ASR result text from the response data
     const asrResultSource = data?.pipelineResponse?.[0]?.output?.[0]?.source;
