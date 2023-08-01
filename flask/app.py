@@ -199,13 +199,13 @@ oee_values = []  # This should be replaced with a more robust solution like a da
 final_values = []
 
 
-@app.route('/flask/reset')
+@app.route('/reset')
 def reset():
     global oee_values
     oee_values = calculate_oee(df)
 
 
-@app.route('/flask/get_oee_value')
+@app.route('/get_oee_value')
 def get_oee_value():
     machine = request.args.get('machine')
     shift = request.args.get('shift')
@@ -251,7 +251,7 @@ def calculate_oee(df):
     return oee_values
 
 
-@app.route('/flask/upload', methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
     path = config['CREDs']['DATA_LOC']
     global df, oee_values, final_values
@@ -269,7 +269,7 @@ def upload_file():
     return redirect(url_for('index'))
 
 
-@app.route('/flask/get_dropdown_data')
+@app.route('/get_dropdown_data')
 def get_dropdown_data():
     global df
     dates = df['date'].unique().tolist()
@@ -283,7 +283,7 @@ def get_dropdown_data():
     return jsonify(dates=dates, machines=machines, shifts=shifts, times=times)
 
 
-@app.route('/flask/get_anomaly_values', methods=['GET'])
+@app.route('/get_anomaly_values', methods=['GET'])
 def get_anomaly_values():
     global final_values
     # print('Anomaly')
@@ -299,7 +299,7 @@ def get_anomaly_values():
     return jsonify(low=mean - threshold, high=mean + threshold)
 
 
-@app.route('/flask/get_correlation_values', methods=['GET'])
+@app.route('/get_correlation_values', methods=['GET'])
 def get_correlation_values():
     final_values1 = final_values[
         ['plannedproductiontime', 'actualproductiontime', 'totaldowntime', 'totalproducedunits',
@@ -323,7 +323,7 @@ def get_correlation_values():
     return jsonify(correlation_values)
 
 
-@app.route('/flask/trend_check', methods=['POST'])
+@app.route('/trend_check', methods=['POST'])
 def trend_check():
     # Get form data
     param = request.form.get('param')
@@ -369,7 +369,7 @@ def trend_check():
     return jsonify(results)
 
 
-@app.route('/flask/forecasting', methods=['GET'])
+@app.route('/forecasting', methods=['GET'])
 def forecasting():
     global final_values
     global df
@@ -426,7 +426,7 @@ def forecasting():
         # Return an error response if an exception occurs
         return jsonify({'error': str(e)})
 
-@app.route('/flask/save_payload', methods=['POST'])
+@app.route('/save_payload', methods=['POST'])
 def save_payload():
     payload = request.get_json()  # Get the payload as a JSON object
 
