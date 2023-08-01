@@ -1,0 +1,5 @@
+flask
+pandas
+datetime
+statsmodels
+Flask-CORS 

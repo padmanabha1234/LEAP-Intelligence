@@ -12,10 +12,10 @@ routes = [
   {
     path: '', redirectTo: `leap`, pathMatch: 'full'
   },
-  {
-    path: '',
-    loadChildren: () => import('./views/authentication/authentication.module').then(module => module.AuthenticationModule)
-  },
+  // {
+  //   path: '',
+  //   loadChildren: () => import('./views/authentication/authentication.module').then(module => module.AuthenticationModule)
+  // },
   {
     path: '',
     component: LayoutComponent,
