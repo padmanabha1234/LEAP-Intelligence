@@ -29,7 +29,7 @@ function updateChart() {
   let shift = $('#shiftSelect').val();
   let param = $('#paramSelect').val();
 
-  $.getJSON('/get_anomaly_values', {
+  $.getJSON('/flask/get_anomaly_values', {
     column: param
   }, function(data) {
     an_low = data.low;
@@ -41,7 +41,7 @@ function updateChart() {
   console.log('Anomaly Low ->', an_low);
 
   if (machine && shift) {
-    $.getJSON('/get_oee_value', {
+    $.getJSON('/flask/get_oee_value', {
       machine: machine,
       shift: shift
     }, function(data) {
@@ -95,7 +95,7 @@ function updateChart() {
 }
 
 function resetChart() {
-  $.getJSON('/reset');
+  $.getJSON('/flask/reset');
   chart.destroy();
   chart = new Chart(document.getElementById('oeeChart'), {
     type: 'line',
@@ -124,7 +124,7 @@ function resetChart() {
 }
 
 
-$.getJSON('/get_correlation_values', function(response) {
+$.getJSON('/flask/get_correlation_values', function(response) {
   console.log(response);  // logs: 12345
 }).fail(function(error) {
   console.log(error);
@@ -142,7 +142,7 @@ setInterval(updateChart, 1000);  // Update the chart every second
 
 $(document).ready(function() {
   // Fetch data and populate dropdowns when the page loads
-  $.getJSON("/get_dropdown_data", function(data) {
+  $.getJSON("/flask/get_dropdown_data", function(data) {
     var dateSelect = $("#date-select");
     var machineSelect = $("#machine-select");
     var shiftSelect = $("#shift-select");
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const tab2Link = document.querySelector('a[href="#tab2"]');
   tab2Link.addEventListener('click', function() {
     // Fetch and display the correlation values
-    fetch('/get_correlation_values')
+    fetch('/flask/get_correlation_values')
       .then(response => response.json())
       .then(data => {
         generateCorrelationChart(data);
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
     event.preventDefault(); // Prevent the tab switch
 
     // Fetch and display the correlation values
-    fetch('/get_correlation_values')
+    fetch('/flask/get_correlation_values')
       .then(response => response.json())
       .then(data => {
         generateCorrelationChart(data);
@@ -331,7 +331,7 @@ document.getElementById('trendForm').addEventListener('submit', function(event) 
   var formData = new FormData(this);
 
   // Send a POST request to the server
-  fetch('/trend_check', {
+  fetch('/flask/trend_check', {
     method: 'POST',
     body: formData
   })
@@ -350,7 +350,7 @@ document.getElementById('trendForm').addEventListener('submit', function(event) 
 //TAB --- 4
 
 // Fetch data and populate dropdowns when the page loads
-$.getJSON("/get_dropdown_data", function(data) {
+$.getJSON("/flask/get_dropdown_data", function(data) {
   var machineSelectTab4 = $("#machineSelectTab4");
   var shiftSelectTab4 = $("#shiftSelectTab4");
   var paramSelectTab4 = $("#paramSelectTab4");
@@ -395,7 +395,7 @@ $('#tab4 form').submit(function(event) {
   console.log('Parameter: ' + parameter);
 
   // Make a request to retrieve the forecasted data
-  $.getJSON('/forecasting', {
+  $.getJSON('/flask/forecasting', {
     machine: machine,
     shift: shift,
     parameter: parameter,
