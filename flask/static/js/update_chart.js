@@ -29,7 +29,7 @@ function updateChart() {
   let shift = $('#shiftSelect').val();
   let param = $('#paramSelect').val();
 
-  $.getJSON('/get_anomaly_values', {
+  $.getJSON('/flask/get_anomaly_values', {
     column: param
   }, function(data) {
     an_low = data.low;
@@ -41,7 +41,7 @@ function updateChart() {
   console.log('Anomaly Low ->', an_low);
 
   if (machine && shift) {
-    $.getJSON('/get_oee_value', {
+    $.getJSON('/flask/get_oee_value', {
       machine: machine,
       shift: shift
     }, function(data) {
@@ -95,7 +95,7 @@ function updateChart() {
 }
 
 function resetChart() {
-  $.getJSON('/reset');
+  $.getJSON('/flask/reset');
   chart.destroy();
   chart = new Chart(document.getElementById('oeeChart'), {
     type: 'line',
@@ -124,7 +124,7 @@ function resetChart() {
 }
 
 
-$.getJSON('/get_correlation_values', function(response) {
+$.getJSON('/flask/get_correlation_values', function(response) {
   console.log(response);  // logs: 12345
 }).fail(function(error) {
   console.log(error);
@@ -142,7 +142,7 @@ setInterval(updateChart, 1000);  // Update the chart every second
 
 $(document).ready(function() {
   // Fetch data and populate dropdowns when the page loads
-  $.getJSON("/get_dropdown_data", function(data) {
+  $.getJSON("/flask/get_dropdown_data", function(data) {
     var dateSelect = $("#date-select");
     var machineSelect = $("#machine-select");
     var shiftSelect = $("#shift-select");
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const tab2Link = document.querySelector('a[href="#tab2"]');
   tab2Link.addEventListener('click', function() {
     // Fetch and display the correlation values
-    fetch('/get_correlation_values')
+    fetch('/flask/get_correlation_values')
       .then(response => response.json())
       .then(data => {
         generateCorrelationChart(data);
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
     event.preventDefault(); // Prevent the tab switch
 
     // Fetch and display the correlation values
-    fetch('/get_correlation_values')
+    fetch('/flask/get_correlation_values')
       .then(response => response.json())
       .then(data => {
         generateCorrelationChart(data);
@@ -323,22 +323,51 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Trend Analysis
-document.getElementById('trendForm').addEventListener('submit', function(event) {
-  event.preventDefault(); // Prevent the form from submitting normally
 
-  // Get the form data
+// Trend Analysis
+//TAB --- 3
+let responseData;
+var param = $('#param').val(); // Default parameter name
+
+document.getElementById('trendForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
   var formData = new FormData(this);
 
-  // Send a POST request to the server
-  fetch('/trend_check', {
+  // Update the param variable with the selected parameter
+  param = formData.get('param');
+  fetch('/flask/trend_check', {
     method: 'POST',
     body: formData
   })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
-      // Update the resultTable element with the result
-      document.getElementById('resultTable').innerHTML = data;
+      console.log("THE data is here::::", data);
+      responseData = data;
+
+      document.getElementById('tableContainer').innerHTML = generateTable(data.results);
+      document.getElementById('chartContainer').innerHTML = '';
+
+      for (var i = 0; i < data.length; i++) {
+        var row = data[i];
+        var dateValue = row[1];
+        var machineValue = row[2];
+        var shiftValue = row[3];
+        var paramValue = row[param];
+
+        var grapData = responseData.grap_data[i];
+        var xAxisIndices = Array.from({ length: grapData[param].length }, (_, index) => index);
+
+        var chartContainer = document.createElement('div');
+        chartContainer.id = 'chart_' + i;
+        document.getElementById('chartContainer').appendChild(chartContainer);
+        var chartData = xAxisIndices.map(index => ({ x: new Date(grapData.dates[index]), y: grapData[param][index] }));
+
+        var startDate = new Date(dateValue);
+        var endDate = new Date(dateValue);
+        startDate.setDate(startDate.getDate() - 5);
+        endDate.setDate(endDate.getDate() + 5);
+      }
     })
     .catch(error => {
       console.error('Error:', error);
@@ -347,36 +376,113 @@ document.getElementById('trendForm').addEventListener('submit', function(event) 
 
 
 
-//TAB --- 4
+// Function to generate the response table
+function generateTable(data) {
+  var tableHTML = '<table class="table table-bordered">' +
+    '<thead><tr><th>SI No</th><th>Date</th><th>Machine</th><th>Shift</th><th>Show Graphs</th></tr></thead><tbody>';
 
-// Fetch data and populate dropdowns when the page loads
-$.getJSON("/get_dropdown_data", function(data) {
-  var machineSelectTab4 = $("#machineSelectTab4");
-  var shiftSelectTab4 = $("#shiftSelectTab4");
-  var paramSelectTab4 = $("#paramSelectTab4");
+  for (var i = 0; i < data.length; i++) {
+    var row = data[i];
+    var serialNumber = i + 1; // Serial number starts from 1
+    var dateValue = row[1];
+//    console.log(dateValue)
+    var machineValue = row[2];
+    var shiftValue = row[3];
 
-  // Clear any existing options
-  machineSelectTab4.empty();
-  shiftSelectTab4.empty();
-  paramSelectTab4.empty();
+    tableHTML += '<tr>' +
+      '<td>' + serialNumber + '</td>' +
+      '<td>' + dateValue + '</td>' +
+      '<td>' + machineValue + '</td>' +
+      '<td>' + shiftValue + '</td>' +
+      '<td><button onclick="handleButtonClick(' + i + ', \'' + param + '\')" class="btn btn-primary">Show Graph</button></td>' +
+      '</tr>';
+  }
 
-  // Populate the machine dropdown
-  data.machines.forEach(function(machine) {
-    machineSelectTab4.append(new Option(machine, machine));
+  tableHTML += '</tbody></table>';
+  return tableHTML;
+}
+
+
+
+// Updated handleButtonClick function
+function handleButtonClick(index, param) {
+  var row = responseData.results[index];
+  var grapData = responseData.grap_data[index];
+  var dates = grapData.dates;
+  var paramValues = grapData[param];
+
+  var modalChartContainer = document.getElementById('modalChartContainer');
+  modalChartContainer.innerHTML = ''; // Clear previous graph content
+
+  var chartContainer = document.createElement('canvas');
+  chartContainer.id = 'chart_' + index + '_modal';
+  modalChartContainer.appendChild(chartContainer);
+
+  var numDays = parseInt(document.getElementById('days').value); // Get user input for number of days
+
+  var chartData = {
+    labels: dates,
+    datasets: [{
+      label: param,
+      data: paramValues,
+      borderColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(75, 192, 192, 0)',
+      fill: true,
+      pointRadius: 5,
+      pointBackgroundColor: function(context) {
+        var dataIndex = context.dataIndex;
+        var currentDate = new Date(dates[dataIndex]);
+        var responseDate = new Date(row[1]);
+        var daysDifference = Math.abs((currentDate - responseDate) / (1000 * 60 * 60 * 24));
+
+        if (daysDifference <= numDays && currentDate <= responseDate) { // Compare with user input
+          return 'red'; // Set red color for points within specified days before response date
+        }
+
+        return 'rgba(75, 192, 192, 0.2)'; // Default color for other points
+      },
+    }]
+  };
+
+  var chartOptions = {
+    responsive: true,
+    title: {
+      display: true,
+      text: 'Line Chart'
+    },
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: 'MM/DD/YY'
+          }
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 20 // Adjust as needed
+        }
+      }],
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Value'
+        }
+      }]
+    }
+  };
+
+  new Chart(chartContainer, {
+    type: 'line',
+    data: chartData,
+    options: chartOptions
   });
 
-  // Populate the shift dropdown
-  data.shifts.forEach(function(shift) {
-    shiftSelectTab4.append(new Option(shift, shift));
-  });
-
-  // Populate the parameter dropdown
-  // Modify the following section to update the parameter dropdown based on your needs
-  var allowedParameters = ["oee", "availability", "performance", "quality"];
-  allowedParameters.forEach(function(parameter) {
-    paramSelectTab4.append(new Option(parameter, parameter));
-  });
-});
+  // Show the modal and center it
+  var modal = new bootstrap.Modal(document.getElementById('graphModal'), { backdrop: 'static' });
+  modal.show();
+}
 
 
 // Forecasting
@@ -395,7 +501,7 @@ $('#tab4 form').submit(function(event) {
   console.log('Parameter: ' + parameter);
 
   // Make a request to retrieve the forecasted data
-  $.getJSON('/forecasting', {
+  $.getJSON('/flask/forecasting', {
     machine: machine,
     shift: shift,
     parameter: parameter,

@@ -1,13 +1,18 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+import datetime
+import requests
+import pandas as pd
 from flask_cors import CORS
 from flask import Flask, request, session, redirect, url_for, render_template, flash
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from flask import Flask, request, redirect, url_for, render_template, jsonify
+from flask import Flask, request, redirect, url_for, render_template, jsonify, g
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from MergeFiles import merge_csv_files
 import json, psycopg2, psycopg2.extras, re, smtplib, pandas as pd, os, configparser
+from werkzeug.security import check_password_hash
+from flask_oidc import OpenIDConnect
 
 configuration_path = os.path.dirname(os.path.abspath(__file__))+'/config.ini'
 config = configparser.ConfigParser()
@@ -16,10 +21,33 @@ print(configuration_path)
 
 df = []
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
+
+app.config.update({
+    'SECRET_KEY': 'SomethingNotEntirelySecret',
+    'TESTING': True,
+    'DEBUG': True,
+    'OIDC_CLIENT_SECRETS': 'client_secrets.json',
+    'OIDC_ID_TOKEN_COOKIE_SECURE': False,
+    'OIDC_REQUIRE_VERIFIED_EMAIL': False,
+    'OIDC_USER_INFO_ENABLED': True,
+    'OIDC_OPENID_REALM': 'master',
+    'OIDC_SCOPES': ['openid', 'email', 'profile'],
+    'OIDC_INTROSPECTION_AUTH_METHOD': 'client_secret_post'
+})
+
+oidc = OpenIDConnect(app)
+
 CORS(app)  # Enable CORS for all routes in the app
 
 app.secret_key = 'cairocoders-ednalan'
+KEYCLOAK_BASE_URL = config.get("Keycloak", "KEYCLOAK_BASE_URL")
+KEYCLOAK_ADMIN_BASE_URL = config.get("Keycloak", "KEYCLOAK_ADMIN_BASE_URL")
+CLIENT_ID = config.get("Keycloak", "CLIENT_ID")
+CLIENT_SECRET = config.get("Keycloak", "CLIENT_SECRET")
+ADMIN_USERNAME = config.get("Keycloak", "ADMIN_USERNAME")
+ADMIN_PASSWORD = config.get("Keycloak", "ADMIN_PASSWORD")
+
  
 DB_HOST = config['CREDs']['DB_HOST']
 DB_NAME = config['CREDs']['DB_NAME']
@@ -46,12 +74,12 @@ def create_user_table(conn):
     except psycopg2.Error as e:
         print("Error creating user table:", e)
 
-def send_email_notification(recipient_email, username):
+def send_email_notification(recipient_email, username,email):
     sender_email = config['CREDs']['SENDER_EMAIL']
     sender_password = config['CREDs']['SENDER_PASSWORD'] 
 
-    subject = 'Registration Successful'
-    body = f'Hello {username} ,\n\nThank you for registering on our website. Your account has been successfully created.'
+    subject = 'Registration Successful for LEAP User'
+    body = f' Dear team, \n\nThere is a new user Registration to explore LEAP service. Kindly find the user details below: \nusername =  {username},\nEmail Id = {email} \n\n\nThanks, \nLeap-intelligence Team'
 
     # Set up the SMTP server and login
     smtp_server = 'smtp.gmail.com' 
@@ -89,6 +117,8 @@ def home():
     # Check if user is logged in
     if 'loggedin' in session:
         # User is logged in, redirect to the desired URL
+        # return redirect(config['CREDs']['DOMAIN_NAME'])
+        # return render_template('home.html')
         return redirect(config['CREDs']['DOMAIN_NAME'])
 
     # User is not logged in, redirect to login page
@@ -97,78 +127,148 @@ def home():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-   
-    # Check if "username" and "password" POST requests exist (user submitted form)
+
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        print(password)
- 
-        # Check if account exists using MySQL
+
         cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
-        # Fetch one record and return result
         account = cursor.fetchone()
- 
+
         if account:
             password_rs = account['password']
-            print(password_rs)
-            # If account exists in users table in out database
             if check_password_hash(password_rs, password):
-                # Create session data, we can access this data in other routes
-                session['loggedin'] = True
-                session['id'] = account['id']
-                session['username'] = account['username']
-                # Redirect to home page
-                return redirect(url_for('home'))
+                token_url = f"{KEYCLOAK_BASE_URL}/protocol/openid-connect/token"
+                token_data = {
+                    "grant_type": "client_credentials",
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
+                    "username": username,
+                    "password": password
+                }
+
+                response = requests.post(token_url, data=token_data)
+                if response.status_code == 200:
+                    token_response = response.json()
+                    access_token = token_response.get("access_token")
+
+                    if access_token:
+                        session['loggedin'] = True
+                        session['access_token'] = access_token
+                        session['username'] = username
+                        return redirect(url_for('home'))
+                    else:
+                        flash('Failed to authenticate with Keycloak')
+                else:
+                    flash('Incorrect username/password or Keycloak authentication failed')
             else:
-                # Account doesnt exist or username/password incorrect
                 flash('Incorrect username/password')
         else:
-            # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
- 
+
     return render_template('login.html')
-  
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     create_user_table(conn)
-    # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
-        # Create variables for easy access
+    
+    if request.method == 'POST':
+        # Get form data
         fullname = request.form['fullname']
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
         companyname = request.form.get('companyname')
-    
-        _hashed_password = generate_password_hash(password)
- 
-        #Check if account exists using MySQL
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
-        account = cursor.fetchone()
-        print(account)
-        # If account exists show error and validation checks
-        if account:
-            flash('Account already exists!')
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+        phonenumber = request.form.get('phonenumber')
+        role = request.form.get('role')  # Updated variable name
+        
+        # Validate form data
+        if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             flash('Invalid email address!')
         elif not re.match(r'[A-Za-z0-9]+', username):
             flash('Username must contain only characters and numbers!')
         elif not username or not password or not email:
             flash('Please fill out the form!')
         else:
-            # Account doesnt exists and the form data is valid, now insert new account into users table
-            cursor.execute("INSERT INTO users (fullname, username, password, email, companyname) VALUES (%s,%s,%s,%s,%s)", (fullname, username, _hashed_password, email,companyname))
-            conn.commit()
-            flash('You have successfully registered!')
-            send_email_notification('padmanabha.mjk1@gmail.com',username)
+            # Check if the username already exists in the database
+            cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+            account = cursor.fetchone()
+            if account:
+                flash('Account already exists!')
+            else:
+                # Hash the password
+                hashed_password = generate_password_hash(password)
+                
+                # Insert new account into the users table
+                cursor.execute("INSERT INTO users (fullname, username, password, email, companyname, phonenumber, role) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+                               (fullname, username, hashed_password, email, companyname, phonenumber, role))  # Updated variable name
+                conn.commit()
+                flash('You have successfully registered!')
+                # Send email notification (if you have implemented the send_email_notification function)
+                send_email_notification(config['CREDs']['RECEIVER_EMAIL'], username,email)
+        
         return redirect(url_for('login'))
-    elif request.method == 'POST':
-        # Form is empty... (no POST data)
-        flash('Please fill out the form!')
+    
     # Show registration form with message (if any)
     return render_template('register.html')
+
+
+
+@app.route("/add_user", methods=["POST"])
+def add_user():
+    try:
+        data = request.json
+        username = data["username"]
+        email = data["email"]
+        password = data["password"]
+
+        token_url = f"{KEYCLOAK_BASE_URL}/protocol/openid-connect/token"
+        token_data = {
+            "grant_type": "client_credentials",
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "username": ADMIN_USERNAME,
+            "password": ADMIN_PASSWORD
+        }
+        
+        response = requests.post(token_url, data=token_data)
+        response.raise_for_status()
+        token_response = response.json()
+        token = token_response.get("access_token")
+
+        if not token:
+            return "Error: Access token not found in response"
+
+        user_data = {
+            "username": username,
+            "email": email,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": password,
+                    "temporary": False
+                }
+            ],
+            "enabled": True
+        }
+
+        user_creation_url = f"{KEYCLOAK_ADMIN_BASE_URL}/users"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(user_creation_url, json=user_data, headers=headers)
+        response.raise_for_status()
+
+        if response.status_code == 201:
+            return f"User added successfully: {response.text}"
+        else:
+            return f"Error adding user: {response.text}"
+
+    except requests.exceptions.RequestException as e:
+        return f"Error: {e}"
    
    
 @app.route('/logout')
@@ -199,13 +299,13 @@ oee_values = []  # This should be replaced with a more robust solution like a da
 final_values = []
 
 
-@app.route('/reset')
+@app.route('/flask/reset')
 def reset():
     global oee_values
     oee_values = calculate_oee(df)
 
 
-@app.route('/get_oee_value')
+@app.route('/flask/get_oee_value')
 def get_oee_value():
     machine = request.args.get('machine')
     shift = request.args.get('shift')
@@ -251,7 +351,7 @@ def calculate_oee(df):
     return oee_values
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/flask/upload', methods=['POST'])
 def upload_file():
     path = config['CREDs']['DATA_LOC']
     global df, oee_values, final_values
@@ -269,7 +369,7 @@ def upload_file():
     return redirect(url_for('index'))
 
 
-@app.route('/get_dropdown_data')
+@app.route('/flask/get_dropdown_data')
 def get_dropdown_data():
     global df
     dates = df['date'].unique().tolist()
@@ -283,7 +383,7 @@ def get_dropdown_data():
     return jsonify(dates=dates, machines=machines, shifts=shifts, times=times)
 
 
-@app.route('/get_anomaly_values', methods=['GET'])
+@app.route('/flask/get_anomaly_values', methods=['GET'])
 def get_anomaly_values():
     global final_values
     # print('Anomaly')
@@ -299,7 +399,7 @@ def get_anomaly_values():
     return jsonify(low=mean - threshold, high=mean + threshold)
 
 
-@app.route('/get_correlation_values', methods=['GET'])
+@app.route('/flask/get_correlation_values', methods=['GET'])
 def get_correlation_values():
     final_values1 = final_values[
         ['plannedproductiontime', 'actualproductiontime', 'totaldowntime', 'totalproducedunits',
@@ -323,13 +423,41 @@ def get_correlation_values():
     return jsonify(correlation_values)
 
 
-@app.route('/trend_check', methods=['POST'])
+@app.route('/flask/trend_check', methods=['POST'])
 def trend_check():
+    global df
+    global oee_values
     # Get form data
     param = request.form.get('param')
     direction = request.form.get('direction')
     no_of_days = int(request.form.get('days'))
     rate = float(request.form.get('rate'))
+
+    for index, row in df.iterrows():
+        PlannedProductionTime = row['plannedproductiontime']
+        ActualProductionTime = row['actualproductiontime']
+        TotalDowntime = row['totaldowntime']
+        TotalGoodUnits = row['totalgoodunits']
+        TotalProducedUnits = row['totalproducedunits']
+
+        # Compute Availability, Performance, Quality, and OEE
+        OperatingTime = ActualProductionTime - TotalDowntime
+        Availability = (ActualProductionTime / PlannedProductionTime) * 100 if PlannedProductionTime else 0
+        Performance = (OperatingTime / ActualProductionTime) * 100 if ActualProductionTime else 0
+        Quality = (TotalGoodUnits / TotalProducedUnits) * 100 if TotalProducedUnits else 0
+        OEE = Availability * Performance * Quality / 10000
+
+    print("param value:", param)
+    # print(oee_values)
+
+    if param == 'availability':
+        print('Availability value is', Availability)
+    elif param == 'performance':
+        print('Performance value is', Performance)
+    elif param == 'quality':
+        print('Quality value is', Quality)
+    elif param == 'oee':
+        print('OEE value is', OEE)
 
     # Convert final_values into a DataFrame
     df = final_values
@@ -357,19 +485,68 @@ def trend_check():
     trends = trends.reset_index()
     results = trends[['index', 'date', 'machine', 'shift']].values.tolist()
 
-    table_html = '<table>'
-    table_html += '<tr><th>Sl No</th><th>Date</th><th>Machine</th><th>Shift</th></tr>'
-    for i, row in enumerate(results, 1):
-        table_html += f'<tr><td>{i}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>'
-    table_html += '</table>'
+    def get_parameter_value(date, machine, shift):
+        matching_rows = df[(df['date'] == date) & (df['machine'] == machine) & (df['shift'] == shift)]
+        if not matching_rows.empty:
+            current_param_value = matching_rows[param].values[0]  # Get the parameter value for the current date
 
-    return table_html
+            # Get the preceding dates for the current date
+            preceding_dates = [date_obj - datetime.timedelta(days=i) for i in range(1, 6)]
 
-    # return render_template('results.html', trends=results)
-    return jsonify(results)
+            # Get parameter values for preceding dates from oee_values, ensuring they are not negative
+            preceding_values = [max(current_param_value - (i * rate), 0) for i in range(1, 6)]
+
+            return preceding_values[::-1]  # Reverse the list to have the highest value first
+        else:
+            return [None] * 5  # Handle the case where no matching row is found
+
+    # Create a list to store the date ranges and parameter values
+    date_ranges = []
+    grap_data = []
+
+    for i, row in enumerate(trends.itertuples(), 1):
+        index_value, date_value, machine_value, shift_value = row.Index, row.date, row.machine, row.shift
+        print(f"SI No {i}: Date={date_value}, Machine={machine_value}, Shift={shift_value}")
+
+        # Parse the date string to a datetime object
+        date_obj = datetime.datetime.strptime(date_value, '%m/%d/%y').date()
+
+        # Calculate 5 days before and after the date
+        date_range_start = date_obj - datetime.timedelta(days=5)
+        date_range_end = date_obj + datetime.timedelta(days=5)
+
+        print(f"Date Range: {date_range_start} to {date_range_end}")
+
+        # Create a list of dates in the date range
+        date_list = []
+        current_date = date_range_start
+        while current_date <= date_range_end:
+            date_list.append(current_date.strftime('%m/%d/%y'))
+            current_date += datetime.timedelta(days=1)
+
+        # Get the parameter values for the central date and the surrounding dates
+        parameter_values = [get_parameter_value(date, machine_value, shift_value) for date in date_list]
+
+        # Append the date range and parameter values to the main list
+        date_ranges.append({
+            "start_date": date_range_start.strftime('%m/%d/%y'),
+            "end_date": date_range_end.strftime('%m/%d/%y'),
+            "dates": date_list,  # Include the list of dates in the range
+            param: parameter_values  # Include parameter name and values
+        })
+
+        grap = {
+            "dates": date_list,
+            param: parameter_values
+        }
+
+        grap_data.append(grap)
+
+    print('grap data is', grap_data)
+    return jsonify(results=results, grap_data=grap_data)
 
 
-@app.route('/forecasting', methods=['GET'])
+@app.route('/flask/forecasting', methods=['GET'])
 def forecasting():
     global final_values
     global df
@@ -426,7 +603,7 @@ def forecasting():
         # Return an error response if an exception occurs
         return jsonify({'error': str(e)})
 
-@app.route('/save_payload', methods=['POST'])
+@app.route('/flask/save_payload', methods=['POST'])
 def save_payload():
     payload = request.get_json()  # Get the payload as a JSON object
 

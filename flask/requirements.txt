@@ -2,5 +2,4 @@ flask
 pandas
 datetime
 statsmodels
-Flask-CORS
-psycopg2 
+Flask-CORS 

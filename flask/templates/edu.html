@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+ <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ <style>
+     .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 100px; /* Adjust the margin as needed */
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            cursor: pointer;
+        }
+</style>
+
+ </head>
+ <body style="background-color:#ccc;">
+  <div style="display: flex; align-items: center;">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Your Image" style="width: 80px; height: 80px; margin-right: 10px;">
+    <div>
+        <p style="color: white;">LEAP | Actionable Intelligence</p>
+    </div>
+</div>
+
+
+
+ <div class="footer">
+        &copy;  Copyright 2023, all rights reserved with Tibil Solutions.
+ </div>
+ </body>
+</html>

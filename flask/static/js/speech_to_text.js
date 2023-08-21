@@ -86,7 +86,7 @@ startButton.addEventListener('click', async () => {
     startButton.style.backgroundColor = '#e74c3c';
     startButton.style.borderColor = '#c94f42';
     const microphoneIcon = startButton.querySelector('.microphone-icon');
-    microphoneIcon.src = '/flask/static/images/microphone_icon.png';
+    microphoneIcon.src = '/static/images/microphone_icon.png';
 
     // Automatically stop recording after 10 seconds
     setTimeout(() => {
@@ -105,7 +105,7 @@ function stopRecording() {
         startButton.style.backgroundColor = '#0dab05';
     startButton.style.borderColor = '#2bc03c';
     const microphoneIcon = startButton.querySelector('.microphone-icon');
-    microphoneIcon.src = '/flask/static/images/mic.png';
+    microphoneIcon.src = '/static/images/mic.png';
   }
 }
 
@@ -151,22 +151,34 @@ function stopRecording() {
     }
 };
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': compute_call_authorization_value
-                    },
-                    body: JSON.stringify(requestBody)
-                });
+const requestId = Date.now() + Math.floor(Math.random() * 1000); // Generate a simple unique identifier
 
-                const data = await response.json();
-                displayResult(data);
-            } catch (error) {
-                displayError('Error occurred while fetching ASR result.');
-                console.error(error);
-            }
+
+try {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': compute_call_authorization_value,
+            'Request-Id': requestId, // Add this header
+        },
+        body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+        const errorMessage = await response.text(); // Read the error message
+        displayError(`API Error: ${errorMessage}`);
+        return;
+    }
+
+    const data = await response.json();
+    displayResult(data);
+} catch (error) {
+    const errorMessage = error.message || 'Unknown error';
+    displayError(`Error occurred while fetching ASR result: ${errorMessage}`);
+    console.error(error);
+}
+
         }
 
         const machineKeywords = ['machine', 'select machine'];
