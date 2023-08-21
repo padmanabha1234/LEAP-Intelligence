@@ -1,0 +1,11 @@
+<div class="dropdown-list" id="downloadButton" #downloadButton >
+    <button class="btn" (click)="showOptions()">
+        <span class="button-text">Download Report</span>
+    </button>
+    <i class="download-icon fa fa-2x fa-download" (click)="showOptions()"></i>
+    <div class="dropdown-content" id="dropdown-content">
+        <span id="download-pdf" class="download-btn text-base" (click)="downloadPDF()">PDF</span>
+        <span id="download-csv" class="download-btn text-base" (click)="downloadCSV()">CSV</span>
+    </div>
+</div>
+

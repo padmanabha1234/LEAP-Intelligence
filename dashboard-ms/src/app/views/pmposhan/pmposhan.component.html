@@ -1,0 +1,34 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">PM POSHAN</p>
+            <p class="program-desc ">Pradhan Mantri Poshan Shakti Nirman (PM POSHAN) earlier known as the National
+                Programme of Mid-Day Meal in Schools is one of the foremost rights based Centrally Sponsored Schemes
+                under the National Food Security Act, 2013 (NFSA). The primary objective of the scheme is to improve the
+                nutritional status of children studying in classes I-VIII in eligible schools.</p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+        <div *ngIf="checkReport('pmposhan_metrics', 'bigNumber1')" id="bignumber1">
+            <app-pmposhan-bignumber-metrics (exportReportData)="importBigNumberMetrics($event)"></app-pmposhan-bignumber-metrics>
+        </div>
+
+        <mat-tab label='Implementation Status' *ngIf="tabs.includes('Implementation Status')">
+            <app-implementation-status-tab [bigNumberMetrics]="bigNumberMetrics"
+                *ngIf="selectedTabLabel === 'Implementation Status'"></app-implementation-status-tab>
+        </mat-tab>
+
+        <mat-tab label='State Wise Progress Status' *ngIf="tabs.includes('State Wise Progress Status')">
+            <app-state-wise-progress-status-tab *ngIf="selectedTabLabel === 'State Wise Progress Status'"></app-state-wise-progress-status-tab>
+        </mat-tab>
+
+        <mat-tab label='District Wise Progress Status' *ngIf="tabs.includes('District Wise Progress Status')">
+            <app-progress-status-tab [bigNumberMetrics]="bigNumberMetrics" *ngIf="selectedTabLabel === 'District Wise Progress Status'"></app-progress-status-tab>
+        </mat-tab>
+
+    </mat-tab-group>
+</div>

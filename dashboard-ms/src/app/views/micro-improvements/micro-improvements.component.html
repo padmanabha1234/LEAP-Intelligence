@@ -1,0 +1,21 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">Micro-Improvements<em></em></p>
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+        <mat-tab label='Implementation Status' *ngIf="tabs.includes('Implementation Status')">
+            <app-implementation-status-tab
+                *ngIf="selectedTabLabel === 'Implementation Status'"></app-implementation-status-tab>
+        </mat-tab>
+        <mat-tab label='Improvements Status' *ngIf="tabs.includes('Improvements Status')">
+            <app-improvements-status-tab
+                *ngIf="selectedTabLabel === 'Improvements Status'"></app-improvements-status-tab>
+        </mat-tab>
+    </mat-tab-group>
+</div>

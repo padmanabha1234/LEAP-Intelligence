@@ -1,0 +1,84 @@
+// @keyframes bulbAnimation {
+//     0% {
+//       background-color: yellow;
+//     }
+//     50% {
+//       background-color: red;
+//     }
+//     100% {
+//       background-color: yellow;
+//     }
+//   }
+  
+//   .container {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: flex-start;
+//   }
+  
+//   .bulb-icon {
+//     display: flex;
+//     justify-content: left;
+//     align-items: flex-start;
+//     font-size: 48px;
+//     animation: bulbAnimation 2s linear infinite; /* Apply the animation to the bulb icon */
+//   }
+  
+//   .message {
+//     /* Add any additional styles for the message */
+//   }
+  
+//   .div-shadow {
+//     box-shadow: 0 0 5px rgba(255, 208, 0, 0.5);
+//     /* Add more styles as needed */
+//   }
+@keyframes bulbBlink {
+    0% {
+      color: yellow; /* Initial color of the bulb */
+    }
+    50% {
+      color: red; /* Color of the bulb during blinking */
+    }
+    100% {
+      color: rgb(243, 243, 243); /* Back to the initial color of the bulb */
+    }
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .alert-danger{
+    padding: auto;
+  }
+  .bulb-icon {
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    font-size: 30px;
+    padding-left: 20px;
+    animation: bulbBlink 1s linear infinite; /* Apply the blink animation to the bulb icon */
+  }
+  
+  .bulb-icon i,
+  .message {
+    // border-bottom: 2px solid rgb(233, 229, 229); /* Add bottom border to both the bulb icon and the message */
+    padding-bottom: 5px; /* Adjust the padding as needed */
+  }
+  
+  .div-shadow {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Background shadow */
+    /* Add more styles as needed */
+  }
+  
+.message {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    justify-content: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  

@@ -1,0 +1,9 @@
+<div class="col-span-full items-center">
+    <ng-container *ngIf="tableReportData?.values && tableReportData?.values?.length > 0">
+        <p class="text-center py-2" >{{fileName}}</p><br>
+        <sb-dashlet type="bar" [data]="tableReportData" [config]="config"></sb-dashlet>
+    </ng-container>
+    <div class="noData" *ngIf="!(tableReportData?.values && tableReportData?.values?.length > 0)">
+        No Data Found
+    </div>
+</div>

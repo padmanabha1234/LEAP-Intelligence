@@ -1,0 +1,13 @@
+<div class="col-span-full items-center">
+    <ng-container *ngIf="tableReportData?.values && tableReportData?.values?.length > 0">
+        <p class="text-center py-2">{{fileName}}</p><br>
+        <sb-dashlet #chart type="bar" [data]="tableReportData" [config]="config"></sb-dashlet>
+        <mat-paginator [length]="tableReportData.values.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10]"
+            showFirstLastButtons aria-label="Select page" (page)="onPageChange($event)">
+        </mat-paginator>
+    </ng-container>
+    <div class="noData" *ngIf="!(tableReportData?.values && tableReportData?.values?.length > 0)">
+        No Data Found
+    </div>
+</div>
+

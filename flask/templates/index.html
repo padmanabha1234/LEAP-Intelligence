@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+   <title>OEE Dashboard</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/index_style.css') }}">
+   <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+      <!-- Other headers -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+   <!-- Chart.js -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <!-- JQuery -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   <!-- Other headers -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+   <!-- CSS -->
+   <!-- JS, Popper.js, and jQuery -->
+   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+<!--  <div class="container">-->
+<ul class="nav nav-tabs" style="margin-top:20px">
+
+<!--<div class="">-->
+   <li class="nav-item col-md-2 mt-4">
+                <label for="langSelect">&nbsp;</label>
+                <select id="langSelect" class="form-control form-control-sm">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="kn">Kannada</option>
+                    <option value="ta">Tamil</option>
+                    <option value="te">Telugu</option>
+                </select>
+            </div>
+         </li>
+   <li class="nav-item">
+            <div class="col-md-4">
+                <div class="record-container">
+                    <div class="record-button-container">
+                        <div class="record-circle d-flex align-items-center justify-content-center">
+                            <button id="startButton" class="record-button">
+                                <img src="{{ url_for('static', filename='images/mic.png') }}" alt="Start Recording" class="microphone-icon">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+   </li>
+</ul>
+        <!-- Rest of your content goes here -->
+         <div id="audioOutput"></div>
+         <div id="logOutput"></div>
+    </div>
+
+    <div id="result"></div>
+      <!--      <div class="container">-->
+      <!--Manual Alerts-->
+      <div class="modal fade" id="incidentModal" tabindex="-1" role="dialog" aria-labelledby="incidentModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="incidentModalLabel">Incident</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form>
+                     <div class="form-group">
+                        <label for="date-select">Date:</label>
+                        <select id="date-select" class="form-control">
+                           <!-- Options will be populated dynamically -->
+                        </select>
+                        <label for="machine-select">Machine:</label>
+                        <select id="machine-select" class="form-control">
+                           <!-- Options will be populated dynamically -->
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="shift-select">Shift:</label>
+                        <select id="shift-select" class="form-control">
+                           <!-- Options will be populated dynamically -->
+                        </select>
+                        <label for="time-select">Time:</label>
+                        <select id="time-select" class="form-control">
+                           <!-- Options will be populated dynamically -->
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="incident-select">Incident:</label>
+                        <select id="incident-select" class="form-control">
+                           <option>Machine Failure</option>
+                           <option>Person Not available</option>
+                           <option>Other</option>
+                        </select>
+                        <label for="description-text">Description:</label>
+                        <textarea id="description-text" class="form-control" rows="3"></textarea>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button id="inc_submit" type="submit" class="btn btn-primary">Submit</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <ul class="nav nav-tabs" style="margin-top:20px">
+         <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#manual">Manual and Threshold</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tab2">Correlation</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tab3">Trend Analysis</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tab4">Forecast</a>
+         </li>
+
+         <!--   <li class="nav-item">-->
+         <!--      <a class="nav-link" data-toggle="tab" href="#tab5">Tab 5</a>-->
+         <!--   </li>-->
+         <div class="button-container ml-auto" style="margin-right:5rem;">
+            <li class="nav-item">
+               <button id="manual-alerts-button" class="btn btn-primary mx-2 btn-block" data-toggle="modal" data-target="#incidentModal">Manual Alerts</button>
+            </li>
+            <form action="/flask/upload" method="post">
+               <button id="manual-connect-btn" class="btn btn-primary mr-4 btn-block" data-toggle="modal" type="submit" style="background-color:green;color:white;">Connect</button>
+            </form>
+              <div id="alerts" class="alerts">
+            <span id="alerts-icon">
+            <i class="fa fa-bell fa-1x"></i>
+            <span id="alerts-count" class="alerts-count"></span>
+            </span>
+            <div id="notifications-list" class="notifications-list"></div>
+         </div>
+         </div>
+      </ul>
+      </div>
+      <div class="tab-content">
+         <div id="manual" class="tab-pane container active">
+            <div class="row">
+               <div class="col-md-2">
+                  <label for="machineSelect">Machine:</label>
+                  <select id="machineSelect" class="form-control form-control-sm"  style="width: 150px;"style="width: 150px;">
+                     <option value="">Select Machine</option>
+                     <!-- Add options dynamically -->
+                  </select>
+               </div>
+               <div class="col-md-2">
+                  <label for="shiftSelect">Shift:&nbsp;</label>
+                  <select id="shiftSelect" class="form-control form-control-sm">
+                     <option value="">Select Shift</option>
+                     <!-- Add options dynamically -->
+                  </select>
+               </div>
+               <div class="col-md-2">
+                  <label for="paramSelect">&nbsp;Parameter:</label>
+                  <select id="paramSelect" class="form-control form-control-sm">
+                     <option value="oee">OEE</option>
+                     <option value="availability">Availability</option>
+                     <option value="performance">Performance</option>
+                     <option value="quality">Quality</option>
+                  </select>
+               </div>
+               <div class="col-md-2" style="color:#495057">
+                  <div class="form-group">
+                     <label for="low">Lower Threshold:</label>
+                     <input id="low" type="number" placeholder="Lower Threshold" class="form-control form-control-sm"  style="width: 150px;" value="50">
+                  </div>
+               </div>
+               <div class="col-md-2" style="color:#495057">
+                  <div class="form-group">
+                     <label for="high">Upper Threshold:</label>
+                     <input id="high" type="number" placeholder="Higher Threshold" class="form-control form-control-sm"  style="width: 150px;" value="70">
+                  </div>
+               </div>
+            </div>
+            <canvas id="oeeChart" width="300" height="400"></canvas>
+         </div>
+         <div id="tab2" class="container tab-pane fade">
+            <canvas id="correlationChart" width="300" height="100"></canvas>
+         </div>
+
+<div id="tab3" class="container tab-pane fade" style="color:#495057">
+    <form id="trendForm">
+        <div class="form-row align-items-center">
+            <div class="form-group col-md-2">
+                <label for="param">Parameter:</label>
+                <select id="param" name="param" class="form-control form-control-sm">
+                    <option value="oee">OEE</option>
+                    <option value="availability">Availability</option>
+                    <option value="performance">Performance</option>
+                    <option value="quality">Quality</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="direction">Direction:</label>
+                <select id="direction" name="direction" class="form-control form-control-sm">
+                    <option value="up">Up</option>
+                    <option value="down">Down</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="days">No. of Days:</label>
+                <input type="text" id="days" name="days" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="rate">Rate:</label>
+                <input type="text" id="rate" name="rate" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="submitBtn" class="invisible">Submit:</label>
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </div>
+    </form>
+    <div id="tableContainer"></div> <!-- Add this new div to hold the generated table -->
+    <div id="chartContainer"></div>
+    <div id="actionButtonsContainer"></div> <!-- Add this new div to hold the "Action" buttons -->
+</div>
+
+    <!-- Add a modal element at the end of your HTML body -->
+<div class="modal fade" id="graphModal" tabindex="-1" aria-labelledby="graphModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Add modal-dialog-centered class -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="graphModalLabel">Graph</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="modalChartContainer"></div> <!-- Container for the chart -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+         <div id="tab4" class="container tab-pane fade" style="color:#495057">
+            <!-- Dropdowns for Tab 4 -->
+            <form action="/flask/forecasting" method="GET">
+               <div class="form-row">
+                  <div class="form-group col-md-2">
+                     <label for="machineSelectTab4">Machine</label>
+                     <select class="form-control form-control-sm" style="width: 150px;" id="machineSelectTab4" name="machine">
+                        <!-- Dropdown options -->
+                     </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                     <label for="shiftSelectTab4">Shift</label>
+                     <select class="form-control form-control-sm"  style="width: 150px;" id="shiftSelectTab4" name="shift">
+                        <!-- Dropdown options -->
+                     </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                     <label for="paramSelectTab4">Parameter</label>
+                     <select class="form-control form-control-sm"  style="width: 150px;" id="paramSelectTab4" name="parameter">
+                        <option value="oee">OEE</option>
+                        <option value="availability">Availability</option>
+                        <option value="performance">Performance</option>
+                        <option value="quality">Quality</option>
+                     </select>
+                  </div>
+                  <div class="form-group col-md-1">
+                     <label for="submitBtn" class="invisible">Submit</label>
+                     <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                  </div>
+               </div>
+            </form>
+            <canvas id="forecasting" width="400" height="150"></canvas>
+         </div>
+      </div>
+      <script src="{{ url_for('static', filename='js/speech_to_text.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/update_chart.js') }}"></script>      
+      <!-- Bootstrap Javascript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+   </body>
+</html>

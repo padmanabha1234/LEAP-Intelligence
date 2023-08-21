@@ -1,0 +1,5 @@
+<mat-form-field class="search-field-wrapper">
+    <mat-label>{{searchFilterConfig?.title}}</mat-label>
+    <input matInput [type]="searchFilterConfig?.searchType" (keydown)="updateSearchText()" [(ngModel)]="searchText"
+        class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+</mat-form-field>

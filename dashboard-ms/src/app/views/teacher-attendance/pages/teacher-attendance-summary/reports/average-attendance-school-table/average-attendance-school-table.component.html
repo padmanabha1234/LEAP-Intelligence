@@ -1,0 +1,18 @@
+<div class="component-wrapper">
+    <div *ngIf="tableReportData?.data?.length > 0">
+        <app-search-bar (searchTextEmitter)="searchTextUpdate($event)" [searchFilterConfig]="searchFilterConfig"></app-search-bar>
+    </div>
+    <div class="chart-wrapper">
+        <div class="xs:col-span-full  text-center py-2" *ngIf="tableReportData?.data?.length > 0">
+            <app-material-heat-chart-drilldown-table [tableData]="tableReportData | searchFilter: searchFilterConfig"
+                [title]="title"></app-material-heat-chart-drilldown-table>
+                <div class="text-left px-2">
+                    Data available for schools where attendance has been marked
+                </div>
+            </div>
+         </div>
+   
+    <div class="noData" *ngIf="tableReportData?.data?.length <= 0">
+        No Data Found
+    </div>
+</div>
