@@ -4,6 +4,10 @@
 <head>
    <title>OEE Dashboard</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/index_style.css') }}">
+   <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -35,7 +39,7 @@
 <ul class="nav nav-tabs" style="margin-top:20px">
 
 <!--<div class="">-->
-   <li class="nav-item col-md-2 mt-2 d-flex mb-3">
+   <li class="nav-item col-md-2 mt-4">
                 <label for="langSelect">&nbsp;</label>
                 <select id="langSelect" class="form-control form-control-sm">
                     <option value="en">English</option>
@@ -47,7 +51,7 @@
             </div>
          </li>
    <li class="nav-item">
-            <div class="col-md-2 mt-2">
+            <div class="col-md-4">
                 <div class="record-container">
                     <div class="record-button-container">
                         <div class="record-circle d-flex align-items-center justify-content-center">
@@ -196,41 +200,64 @@
          <div id="tab2" class="container tab-pane fade">
             <canvas id="correlationChart" width="300" height="100"></canvas>
          </div>
-         <div id="tab3" class="container tab-pane fade" style="color:#495057">
-            <form id="trendForm">
-               <div class="form-row align-items-center">
-                  <div class="form-group col-md-2">
-                     <label for="param">Parameter:</label>
-                     <select id="param" name="param" class="form-control form-control-sm">
-                        <option value="oee">OEE</option>
-                        <option value="availability">Availability</option>
-                        <option value="performance">Performance</option>
-                        <option value="quality">Quality</option>
-                     </select>
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="direction">Direction:</label>
-                     <select id="direction" name="direction" class="form-control form-control-sm">
-                        <option value="up">Up</option>
-                        <option value="down">Down</option>
-                     </select>
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="days">No. of Days:</label>
-                     <input type="text" id="days" name="days" class="form-control form-control-sm">
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="rate">Rate:</label>
-                     <input type="text" id="rate" name="rate" class="form-control form-control-sm">
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="submitBtn" class="invisible">Submit:</label>
-                     <button type="submit" id="submitBtn" class="btn btn-primary btn-block">Submit</button>
-                  </div>
-               </div>
-            </form>
-            <div id="resultTable"></div>
-         </div>
+
+<div id="tab3" class="container tab-pane fade" style="color:#495057">
+    <form id="trendForm">
+        <div class="form-row align-items-center">
+            <div class="form-group col-md-2">
+                <label for="param">Parameter:</label>
+                <select id="param" name="param" class="form-control form-control-sm">
+                    <option value="oee">OEE</option>
+                    <option value="availability">Availability</option>
+                    <option value="performance">Performance</option>
+                    <option value="quality">Quality</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="direction">Direction:</label>
+                <select id="direction" name="direction" class="form-control form-control-sm">
+                    <option value="up">Up</option>
+                    <option value="down">Down</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="days">No. of Days:</label>
+                <input type="text" id="days" name="days" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="rate">Rate:</label>
+                <input type="text" id="rate" name="rate" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="submitBtn" class="invisible">Submit:</label>
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </div>
+    </form>
+    <div id="tableContainer"></div> <!-- Add this new div to hold the generated table -->
+    <div id="chartContainer"></div>
+    <div id="actionButtonsContainer"></div> <!-- Add this new div to hold the "Action" buttons -->
+</div>
+
+    <!-- Add a modal element at the end of your HTML body -->
+<div class="modal fade" id="graphModal" tabindex="-1" aria-labelledby="graphModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Add modal-dialog-centered class -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="graphModalLabel">Graph</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="modalChartContainer"></div> <!-- Container for the chart -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
          <div id="tab4" class="container tab-pane fade" style="color:#495057">
             <!-- Dropdowns for Tab 4 -->
             <form action="/flask/forecasting" method="GET">

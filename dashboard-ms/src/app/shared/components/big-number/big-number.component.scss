@@ -1,0 +1,71 @@
+.fa-arrow-down {
+    color: rgb(246, 49, 49);
+}
+
+.fa-arrow-up {
+    color: rgb(53, 185, 53);
+}
+
+.fa-minus {
+    color: black;
+}
+
+.report-wrapper {
+    border-radius: 14px;
+    width: 100px;
+    padding: 5px;
+    margin-bottom: 20px;
+    width: auto;
+    background-color: #FCFDFF;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+
+}
+
+.average-wrapper {
+    // margin: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4C30F5;
+}
+
+.difference-wrapper {
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+}
+
+.difference-percentage {
+    margin-right: 1rem;
+    font-size: medium;
+    font-weight: bolder;
+    color: #4C30F5;
+    margin-top:-3rem
+
+}
+
+.average-percentage {
+    // font-family: 'Poppins', sans-serif;
+    // font-style: normal;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30.0896px;
+    line-height: 87px;
+    color: var(--cQ-secondary) !important;
+    text-align: justify;
+    height: 85px;
+}
+
+.report-name {
+//     font-family: 'Poppins', sans-serif;
+//     font-style: normal;
+//     font-weight: 500;
+//     font-size: 20px;
+//     line-height: 30px;
+}

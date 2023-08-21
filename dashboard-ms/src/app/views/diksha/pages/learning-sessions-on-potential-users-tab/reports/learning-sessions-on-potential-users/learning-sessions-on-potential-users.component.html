@@ -1,0 +1,10 @@
+<div class="col-span-full">
+    <ng-container *ngIf="reportData">
+        <p class="text-center font-medium py-2 filename"></p><br>
+        <app-leaflet-map [mapData]="reportData" *ngIf="NVSK"></app-leaflet-map>
+        <app-big-number [bigNumberReportData]="reportData" *ngIf="!NVSK"></app-big-number>    
+    </ng-container>
+    <div class="noData" *ngIf="!reportData">
+        No Data Found
+    </div>
+</div>

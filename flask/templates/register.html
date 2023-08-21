@@ -11,15 +11,21 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
  </head>
  <body style="background-color:#ccc;">
- <div class="container">
+  <div style="display: flex; align-items: center;">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Your Image" style="width: 80px; height: 80px; margin-right: 10px;">
+    <div>
+        <p style="color: white;">LEAP | Actionable Intelligence</p>
+    </div>
+</div>
+ <div class="container ">
    <div class="row main">
     <div class="main-login main-center">
         <div class="center-align"
             <h5> Register New User </h5>
         </div>
      <form action="{{ url_for('register') }}" method="post" autocomplete="off"> 
-      <div class="form-group">
-       <label for="name" class="cols-sm-2 control-label">First Name</label>
+      <div class="form-group mb-0">
+       <label for="name" class="cols-sm-2 control-label">Name</label>
        <div class="cols-sm-10">
         <div class="input-group">
          <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
@@ -27,7 +33,7 @@
         </div>
        </div>
       </div>
-      <div class="form-group">
+      <div class="form-group mb-0">
        <label for="email" class="cols-sm-2 control-label">Email Id</label>
        <div class="cols-sm-10">
         <div class="input-group">
@@ -36,7 +42,7 @@
         </div>
        </div>
       </div>
-      <div class="form-group">
+      <div class="form-group mb-0">
         <label for="companyname" class="cols-sm-2 control-label">Company name (optional) </label>
         <div class="cols-sm-10">
          <div class="input-group">
@@ -45,8 +51,29 @@
          </div>
         </div>
        </div>
-  
-      <div class="form-group">
+       <div class="form-group mb-0">
+        <label for="role" class="cols-sm-2 control-label">Role (optional)</label>
+        <div class="cols-sm-10">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-address-card" aria-hidden="true"></i></span>
+                <input type="text" class="form-control" name="role" id="role" placeholder="Enter your Role ">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-0">
+      <label for="phonenumber" class="cols-sm-2 control-label">Phone number (optional)</label>
+      <div class="cols-sm-10">
+        <div class="input-group">
+          <span class="input-group-addon">
+            <i class="fa fa-phone fa-flip-horizontal" aria-hidden="true"></i>
+          </span>
+          <input type="text" class="form-control" name="phonenumber" id="phonenumber" placeholder="Enter your Phone number">
+        </div>
+      </div>
+    </div>
+
+      <div class="form-group mb-0">
        <label for="username" class="cols-sm-2 control-label">Username</label>
        <div class="cols-sm-10">
         <div class="input-group">
@@ -55,8 +82,8 @@
         </div>
        </div>
       </div>
-  
-      <div class="form-group">
+      
+      <div class="form-group mb-4">
        <label for="password" class="cols-sm-2 control-label">Password</label>
        <div class="cols-sm-10">
         <div class="input-group">
@@ -79,13 +106,38 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-       <input type="submit" value="Register" class="form-control btn btn-primary " name="">        
+       <input type="submit" id="addUserButton" value="Register" class="form-control btn btn-primary " name="">        
       </div>
         
      </form>
     </div>
    </div>
   </div>
+  <div class="footer">
+    &copy;  Copyright 2023, all rights reserved with Tibil Solutions.
+</div>
+
+<script>
+  document.getElementById("addUserButton").addEventListener("click", function() {
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+       
+      const userData = {
+          username: username,
+          email: email,
+          password: password
+      };
+      console.log(userData)
+      fetch("/add_user", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(userData)
+      });
+  });
+</script>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
  </body>
