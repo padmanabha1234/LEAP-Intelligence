@@ -5,10 +5,10 @@
 export const environment = {
   production: false,
   google_analytics_tracking_id: "UA-260554959-3",
-  apiURL: 'https://leap-intelligence.tibilprojects.com',
+  apiURL: 'https://leap.tibilprojects.com/api/queryBuilder',
+  flaskAPI :"https://leap.tibilprojects.com/flask/",
   // apiURL: 'http://localhost:3008',
   // flaskAPI :"http://127.0.0.1:5002/flask/",
-  flaskAPI :"https://leap-intelligence.tibilprojects.com/flask/",
   stateCode: "NA",
   numberFormat: {
     reports: {
