@@ -36,7 +36,7 @@ app.config.update({
     'OIDC_INTROSPECTION_AUTH_METHOD': 'client_secret_post'
 })
 
-oidc = OpenIDConnect(app)
+# oidc = OpenIDConnect(app)
 
 CORS(app)  # Enable CORS for all routes in the app
 
