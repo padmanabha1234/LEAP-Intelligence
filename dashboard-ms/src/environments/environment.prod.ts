@@ -10,6 +10,5 @@ export const environment = {
       format: 'short'
     }
   },
-  skipCluster: true,
-  config: "state",
+  config: "VSK",
 };
