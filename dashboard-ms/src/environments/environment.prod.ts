@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
   google_analytics_tracking_id:"UA-260554959-3",
-  apiURL: 'http://localhost:3008',
-  flaskAPI :"http://127.0.0.1:5002/flask/",
+  apiURL: 'https://leap.tibilprojects.com/api/queryBuilder',
+  flaskAPI :"https://leap.tibilprojects.com/flask/",
   stateCode: "AP",
   numberFormat: {
     reports: {
