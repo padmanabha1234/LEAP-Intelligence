@@ -3,7 +3,7 @@ export const environment = {
   google_analytics_tracking_id:"UA-260554959-3",
   apiURL: 'https://leap.tibilprojects.com/api/queryBuilder',
   flaskAPI :"https://leap.tibilprojects.com/flask/",
-  stateCode: "AP",
+  stateCode: "JH",
   numberFormat: {
     reports: {
       locale: 'en-IN',

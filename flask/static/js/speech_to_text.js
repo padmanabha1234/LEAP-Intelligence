@@ -7,8 +7,8 @@
         let voice;
 
         const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
         const audioOutput = document.getElementById('audioOutput');
+        const microphoneIcon = startButton.querySelector('.microphone-icon'); 
 
         const langSelect = document.getElementById('langSelect');
 
@@ -27,89 +27,51 @@
   }
 });
 
-
-        const handleSuccess = (stream) => {
-            window.stream = stream;
-            mediaRecorder = new MediaRecorder(stream);
-
-            mediaRecorder.ondataavailable = (e) => {
-                chunks.push(e.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(chunks, { type: 'audio/mpeg; codecs=opus' });
-                chunks = [];
-
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64String = reader.result.split(',')[1];
-                    const audioElement = document.createElement('audio');
-                    audioElement.src = 'data:audio/mpeg;base64,' + base64String;
-                    audioElement.controls = true;
-                    audioOutput.innerHTML = '';
-                    // audioOutput.appendChild(audioElement);
-
-                    // Call the function to fetch ASR result and display it
-                    fetchASRResult(base64String);
-                };
-
-                reader.readAsDataURL(audioBlob);
-            };
-        };
-
+let audioContext;
+let recorder;
 
 startButton.addEventListener('click', async () => {
-  if (!recordingInProgress) {
-    // Start recording
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    recordingInProgress = true;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new AudioContext();
+        const input = audioContext.createMediaStreamSource(stream);
+        recorder = new Recorder(input);
+        recorder.record();
 
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = (e) => {
-      chunks.push(e.data);
-    };
-    mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(chunks, { type: 'audio/mpeg; codecs=opus' });
-      chunks = [];
+        startButton.style.backgroundColor = '#e74c3c';
+        startButton.style.borderColor = '#c94f42';
+        microphoneIcon.src = '/static/images/microphone_icon.png';
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(',')[1];
-        fetchASRResult(base64String);
-      };
+        startButton.disabled = true;
 
-      reader.readAsDataURL(audioBlob);
-    };
-
-    mediaRecorder.start();
-//    startButton.textContent = 'Stop Recording';
-    startButton.style.backgroundColor = '#e74c3c';
-    startButton.style.borderColor = '#c94f42';
-    const microphoneIcon = startButton.querySelector('.microphone-icon');
-    microphoneIcon.src = '/static/images/microphone_icon.png';
-
-    // Automatically stop recording after 10 seconds
-    setTimeout(() => {
-      stopRecording();
-    }, 5000); // 5 seconds in milliseconds
-  }
+        // Set a timer to automatically stop recording after 5 seconds
+        setTimeout(() => {
+            stopRecording();
+        }, 5000); // 5000 milliseconds = 5 seconds
+    } catch (error) {
+        console.error(error);
+    }
 });
 
-
-
 function stopRecording() {
-  if (recordingInProgress) {
-    mediaRecorder.stop();
-    stream.getTracks().forEach(track => track.stop());
-    recordingInProgress = false;
+    if (recorder) {
+        recorder.stop();
+        recorder.exportWAV(async (blob) => {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64String = reader.result.split(',')[1];
+                await fetchASRResult(base64String); // Wait for ASR result before proceeding
+            };
+            reader.readAsDataURL(blob);
+        });
+
         startButton.style.backgroundColor = '#0dab05';
-    startButton.style.borderColor = '#2bc03c';
-    const microphoneIcon = startButton.querySelector('.microphone-icon');
-    microphoneIcon.src = '/static/images/mic.png';
-  }
+        startButton.style.borderColor = '#2bc03c';
+        microphoneIcon.src = '/static/images/mic.png';
+
+        startButton.disabled = false;
+    }
 }
-
-
         async function fetchASRResult(base64Audio) {
             const url = 'https://dhruva-api.bhashini.gov.in/services/inference/pipeline';
 
@@ -127,7 +89,7 @@ function stopRecording() {
                     sourceLanguage: sourceLanguage
                 },
                 serviceId: asr_service_id,
-                audioFormat: 'flac',
+                audioFormat: 'wav',
                 samplingRate: 16000
             }
         },
@@ -309,8 +271,3 @@ function findTabLabelForTab(tabId) {
     const logOutput = document.getElementById('logOutput');
     logOutput.textContent += message + '\n';
 }
-
-// Audio Content
-
-
-
