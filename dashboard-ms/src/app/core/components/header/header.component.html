@@ -49,7 +49,8 @@
             </div>
             <div class="justify-left items-center md:flex" *ngIf="!NVSK">
                 <h1 class="font-medium leading-tight lg:text-4xl md:text-2xl xs:text-sm sm:text-1xl mt-0">
-                    {{title.dashboard_header2_title ? title.dashboard_header2_title : stateName + ' -  (VSK)'}}</h1>
+                    {{ titleToDisplay }}
+                </h1>
             </div>
             <div class="">
 
