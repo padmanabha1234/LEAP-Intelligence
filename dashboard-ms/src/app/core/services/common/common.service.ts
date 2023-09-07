@@ -31,7 +31,8 @@ export class CommonService {
     if (category === 'manufacturing') {
       url = '../../../assets/data/mock/leap_metric.json';
     } else if (category === 'education') {
-      url = '../../../assets/data/mock/metric.json';
+      // url = '../../../assets/data/mock/metric.json';
+      url=`${environment.apiURL}/metric`;
     } else {
       url = '../../../assets/data/mock/metric.json';
     }

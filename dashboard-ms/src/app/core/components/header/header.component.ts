@@ -8,6 +8,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { RbacService } from '../../services/rbac-service.service';
 import { ActivatedRouteSnapshot, Router, NavigationEnd, NavigationStart } from '@angular/router';
 
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -24,6 +25,8 @@ import { ActivatedRouteSnapshot, Router, NavigationEnd, NavigationStart } from '
     ])
   ]
 })
+
+
 export class HeaderComponent implements OnInit {
   stateName: any;
   config: string = environment.config
@@ -40,9 +43,44 @@ export class HeaderComponent implements OnInit {
   newData: any;
   hideDiv: boolean = true;
 
+  titleToDisplay: string = ''; 
+
   constructor(private router: Router, private _rbacService: RbacService) {
 
     this.title = Title
+
+    this.router.events.subscribe((event) => {
+      this._rbacService.getRbacDetails().subscribe((rbacDetails: any) => {
+        this.rbacDetails = rbacDetails
+      })
+
+      let result = {
+        "State": this.rbacDetails?.state_name,
+        "District": this.rbacDetails[this.rbacDetails["district"]],
+        "Block": this.rbacDetails[this.rbacDetails["block"]],
+        "Cluster": this.rbacDetails[this.rbacDetails["cluster"]],
+        "School": this.rbacDetails[this.rbacDetails["school"]],
+        "Grade": this.rbacDetails[this.rbacDetails["grade"]],
+      }
+      this.newData = result;
+      if (event instanceof NavigationEnd) {
+        const currentRoute = event.url;
+        if (currentRoute === '/home' || currentRoute === '/rbac') {
+          this.hideDiv = true;
+      } else {
+          this.hideDiv = false;
+          // Check if the route is /leap and update title accordingly
+          if (currentRoute === '/leap') {
+              this.titleToDisplay = this.title.dashboard_header3_title ? this.title.dashboard_header3_title : this.stateName + ' - (VSK)';
+          } else if (currentRoute === '/alert') {
+            this.titleToDisplay = this.title.dashboard_header3_title ? this.title.dashboard_header3_title : this.stateName + ' - (VSK)';
+        } else {
+              this.titleToDisplay = this.title.dashboard_header2_title ? this.title.dashboard_header2_title : this.stateName + ' - (VSK)';
+          }
+          console.log('Title to Display:', this.titleToDisplay); 
+      }
+  }
+    });
 
   }
 
@@ -63,29 +101,7 @@ export class HeaderComponent implements OnInit {
     else {
       this.stateName = 'India'
     }
-    this.router.events.subscribe((event) => {
-      this._rbacService.getRbacDetails().subscribe((rbacDetails: any) => {
-        this.rbacDetails = rbacDetails
-      })
-
-      let result = {
-        "State": this.rbacDetails?.state_name,
-        "District": this.rbacDetails[this.rbacDetails["district"]],
-        "Block": this.rbacDetails[this.rbacDetails["block"]],
-        "Cluster": this.rbacDetails[this.rbacDetails["cluster"]],
-        "School": this.rbacDetails[this.rbacDetails["school"]],
-        "Grade": this.rbacDetails[this.rbacDetails["grade"]],
-      }
-      this.newData = result;
-      if (event instanceof NavigationStart) {
-        const currentRoute = event.url;
-        if (currentRoute === '/home' || currentRoute === '/rbac') {
-          this.hideDiv = true;
-        } else {
-          this.hideDiv = false;
-        }
-      }
-    });
+    
     
   }
 
