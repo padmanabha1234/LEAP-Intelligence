@@ -14,7 +14,7 @@ export const StateCodes = [
     "HR",
     "HP",
     "JK",
-    "JH",
+    "MDL",
     "KA",
     "KL",
     "LH",
@@ -36,7 +36,8 @@ export const StateCodes = [
     "UP",
     "UT",
     "WB",
-    "MU"
+    "MU",
+    "JH"
 ]
 
 export const stateNames = [
@@ -188,5 +189,10 @@ export const stateNames = [
     {
         stateName: 'Mauritius',
         stateCode: 'MU'
+    },
+    {
+        stateName: 'Model State',
+        stateCode: 'MDL'
     }
+
 ]

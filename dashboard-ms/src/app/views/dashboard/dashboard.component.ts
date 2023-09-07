@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.rbac.setRbacDetails({ role: 1});
+    // this.rbac.setRbacDetails({ role: 1});
     this.checkRbacLevel();
   }
 

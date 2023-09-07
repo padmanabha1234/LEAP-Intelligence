@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { RbacService } from '../rbac-service.service';
 import { StateCodes } from '../../config/StateCodes';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class MapService {
   stateGeoJSON: any;
   rbacDetails: any;
 
-  constructor(private _rbacService: RbacService) {
+  constructor(private _rbacService: RbacService, private httpService: HttpClient) {
     this._rbacService.getRbacDetails().subscribe((rbacDetails: any) => {
       this.rbacDetails = rbacDetails
     })
@@ -22,7 +23,7 @@ export class MapService {
     if (!this.countryGeoJSON) {
       const response = await fetch(`${environment.apiURL}/assets/IN.json`);
       const temp = await response.json();
-      this.countryGeoJSON = temp['IN'];
+      this.countryGeoJSON = temp;
     }
 
     return this.countryGeoJSON;

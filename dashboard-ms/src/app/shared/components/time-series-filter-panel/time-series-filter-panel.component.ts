@@ -13,7 +13,7 @@ export class TimeSeriesFilterPanelComponent implements OnInit {
   @Output() timeSeriesUpdated = new EventEmitter<any>();
   @Input() minDate: any;
   @Input() maxDate: any;
-  @Input() defaultSelectedDays: any = 7;
+  @Input() defaultSelectedDays: any = 30;
   range: FormGroup;
   reset: boolean = false;
   prevStartDate: any;

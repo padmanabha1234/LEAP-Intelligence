@@ -100,7 +100,7 @@ export class LeafletMapComponent implements OnInit, AfterViewInit, OnChanges {
         this.createMarkers(this.mapData);
       }
 
-      const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd'
       });
 
@@ -116,6 +116,7 @@ export class LeafletMapComponent implements OnInit, AfterViewInit, OnChanges {
       else if (Number(lev) > 1 || this.hierarchyLevel > 1) {
         this.map?.removeLayer(this.layerGroup);
         // await this.applyStateBorder();
+        await this.applyStateWithDistrictsBorder();
         this.applyDistrictBorder();
         this.createMarkers(this.mapData);
       }
@@ -480,7 +481,7 @@ export class LeafletMapComponent implements OnInit, AfterViewInit, OnChanges {
   fitToMarkers(): void {
     if (this.markers) {
       this.map.fitBounds(this.markers.getBounds(), {
-        padding: [150, 150]
+        padding: [300, 300]
       });
     }
   }
@@ -586,7 +587,7 @@ export class LeafletMapComponent implements OnInit, AfterViewInit, OnChanges {
 
         markerIcon._path.id = StateCodes[Number(data.state_code)];
 
-        markerIcon.setRadius(5);
+        markerIcon.setRadius(4);
 
         const popup = R.responsivePopup({
           hasTip: false,

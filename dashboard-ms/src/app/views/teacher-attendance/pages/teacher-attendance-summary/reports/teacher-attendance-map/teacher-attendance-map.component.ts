@@ -38,7 +38,7 @@ export class TeacherAttendanceMapComponent implements OnInit, OnDestroy, AfterVi
   // title = "Download School Report"
   schoolReportsData: any[] = [];
   pagereportName = "teachers_present"
-  defaultSelectedDays: any = 7;
+  defaultSelectedDays: any = 40;
   drillDownSubscription: any
   drillDownDetails: any;
 
