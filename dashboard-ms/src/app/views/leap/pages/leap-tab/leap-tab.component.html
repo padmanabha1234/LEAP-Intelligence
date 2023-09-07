@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+<div class="col-span-full tab-wrapper">
+    <div class="filter-row grid grid-cols-4">
+        <div class="time-series-filter md:col-span-1 col-span-4">
+            <app-time-series-filter-panel (timeSeriesUpdated)="timeSeriesUpdated($event)" [minDate]="minDate"
+                [maxDate]="maxDate" [defaultSelectedDays]="defaultSelectedDays"></app-time-series-filter-panel>
+        </div>
+        <div class="col-span-2">
+            <app-filter-panel [isMulti]="true" [filters]="filters" (filtersUpdated)="filtersUpdated($event)"
+                colSize="col-span-4"></app-filter-panel>
+        </div>
+        <div class="col-start-4 col-end-5 download-button" id="downloadbutton" #downloadbutton>
+            <app-popup-options [data]="reportsData" [reportName]="'leaf_report'"></app-popup-options>
+        </div>
+    </div>
+    <div class="reports-row">
+        <!-- <div class="row-wrapper grid grid-cols-2 gap-4">
+            <div class="col-span-2 xmd:col-span-2 div-shadow" *ngIf="checkReport('leap_OEE_bignumber', 'bigNumber')" id="chart1">
+                <app-leap-oee #leapOEE></app-leap-oee>
+            </div>
+        </div>
+        <div class="row-wrapper grid grid-cols-3 gap-4">
+            <div class="col-span-1 div-shadow" *ngIf="checkReport('leap_availability', 'bigNumber')" id="chart2">
+                <app-leap-availibility #leapAvailibilty></app-leap-availibility>
+            </div>
+        
+            <div class="col-span-1 div-shadow" *ngIf="checkReport('leap_performance', 'bigNumber')" id="chart3">
+                <app-leap-performance #leapPerformance></app-leap-performance>
+            </div>
+        
+            <div class="col-span-1 div-shadow" *ngIf="checkReport('leap_quality', 'bigNumber')" id="chart4">
+                <app-quality #leapQuality></app-quality>
+            </div>
+        </div> -->
+
+        <div class="row-wrapper grid grid-cols-3">
+            <div class="col-span-2 div-shadow" [ngClass]="machineStatus.status ? 'on' : 'off'">
+                  
+                <app-leap-oee #leapOEE></app-leap-oee>
+            </div>
+            <div class="col-span-1 grid grid-rows-3">
+                <div class="row-span-1 div-shadow">
+                    <app-leap-availibility #leapAvailibilty></app-leap-availibility>
+                </div>
+                <div class="row-span-1 div-shadow">
+                    <app-leap-performance #leapPerformance></app-leap-performance>
+                </div>
+                <div class="row-span-1 div-shadow">
+                    <app-quality #leapQuality></app-quality>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

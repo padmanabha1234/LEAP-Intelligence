@@ -1,0 +1,9 @@
+<div class="chart-wrapper">
+    <div class="xs:col-span-full  text-center py-2" *ngIf="tableReportData?.data?.length > 0">
+        <app-material-heat-chart-drilldown-table [tableData]="tableReportData" [title]="title"></app-material-heat-chart-drilldown-table>
+    </div>
+
+</div>
+<div class="noData" *ngIf="tableReportData?.data?.length <= 0">
+    No Data Found
+</div>

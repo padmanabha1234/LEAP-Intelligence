@@ -1,0 +1,21 @@
+<ng-container *ngIf="NVSK">
+    <div class="col-span-full">
+        <ng-container *ngIf="(reportData?.values && reportData?.values?.length > 0)">
+            <p class="text-center font-medium py-2 filename" >{{title}}</p><br>
+            <app-sb-bar-chart type="horizontalBar" [data]="reportData" [config]="config" ></app-sb-bar-chart>
+        </ng-container>
+        <div class="noData" *ngIf="!(reportData?.values && reportData?.values?.length > 0)">
+            No Data Found
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="!NVSK">
+    <div class="grid grid-cols-12" *ngIf="reportData?.data?.length > 0">
+        <div class="xs:col-span-full">
+            <app-material-heat-chart-table [tableData]="reportData" [title]="title"></app-material-heat-chart-table>
+        </div>
+    </div>
+    <div class="noData" *ngIf="reportData?.data?.length <= 0">
+        No Data Found
+    </div>
+</ng-container>

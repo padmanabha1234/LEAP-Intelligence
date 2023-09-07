@@ -1,0 +1,29 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title">Student Assessments</p>
+            <!-- <p class="program-desc ">Pradhan Mantri Poshan Shakti Nirman (PM POSHAN) earlier known as the National
+                Programme of Mid-Day Meal in Schools is one of the foremost rights based Centrally Sponsored Schemes
+                under the National Food Security Act, 2013 (NFSA). The primary objective of the scheme is to improve the
+                nutritional status of children studying in classes I-VIII in eligible schools.</p> -->
+        </div>
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+
+        <mat-tab label='Assessment Summary' *ngIf="tabs.includes('Assessment Summary')">
+            <app-assessment-summary-tab *ngIf="selectedTabLabel === 'Assessment Summary'"></app-assessment-summary-tab>
+        </mat-tab>
+
+        <mat-tab label='Map View' *ngIf="tabs.includes('Map View')">
+            <app-map-view-tab *ngIf="selectedTabLabel === 'Map View'"></app-map-view-tab>
+        </mat-tab>
+
+        <mat-tab label='LO Summary' *ngIf="tabs.includes('LO Summary')">
+            <app-lo-summary-tab *ngIf="selectedTabLabel === 'LO Summary'"></app-lo-summary-tab>
+        </mat-tab>
+    </mat-tab-group>
+</div>

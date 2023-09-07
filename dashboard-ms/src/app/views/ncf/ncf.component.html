@@ -1,0 +1,24 @@
+<div class="metric-card-wrapper">
+    <div class="grid gap-4 grid-cols-6 xmd:grid-cols-12">
+        <div class="col-span-12">
+            <p class="program-title ">National Curriculum Framework (NCF)</p>
+            
+    </div>
+</div>
+
+<div class="custom-tab-group-wrapper">
+    <mat-tab-group [selectedIndex]="tabIndex" mat-align-tabs="start" animationDuration="0ms"
+        (selectedTabChange)="onTabChanged($event)" appFullScreen>
+
+        <mat-tab label='Progress Status' *ngIf="tabs.includes('Progress Status')">
+            <app-progress-status-tab
+                *ngIf="selectedTabLabel === 'Progress Status'"></app-progress-status-tab>
+        </mat-tab>
+
+        <mat-tab label='DiSanc Survey' *ngIf="tabs.includes('DiSanc Survey')">
+            <app-disanc-survey-tab
+                *ngIf="selectedTabLabel === 'DiSanc Survey'"></app-disanc-survey-tab>
+        </mat-tab>
+        
+    </mat-tab-group>
+</div>

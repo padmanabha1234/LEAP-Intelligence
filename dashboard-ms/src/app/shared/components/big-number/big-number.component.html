@@ -1,0 +1,42 @@
+<div
+  class="report-wrapper"
+  *ngIf="averagePercentage !== undefined && averagePercentage !== null"
+>
+  <div class="average-wrapper">
+    <h1 class="average-percentage">
+     {{ formatNumber(averagePercentage) + this.valueSuffix }}
+    </h1>
+  </div>
+  <div
+    class="difference-wrapper"
+    *ngIf="
+      differenceInPercentage !== undefined && differenceInPercentage !== null
+    "
+  >
+    <div>
+      <h4 class="difference-percentage">
+       {{ formatNumber(differenceInPercentage) + this.valueSuffix }}
+      </h4>
+    </div>
+    <div [ngSwitch]="differenceIndicator">
+      <div *ngSwitchCase="true">
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+      </div>
+      <div *ngSwitchCase="false">
+        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+      </div>
+      <div *ngSwitchDefault>
+        <i class="fa fa-minus" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+  <div class="report-name text-center">
+    {{ bigNumberReportData?.reportName }}
+  </div>
+</div>
+<div
+  class="noData"
+  *ngIf="averagePercentage === null || averagePercentage === undefined"
+>
+  No Data Found
+</div>

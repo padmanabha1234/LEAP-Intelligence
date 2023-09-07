@@ -1,0 +1,9 @@
+flask
+pandas
+datetime
+statsmodels
+Flask-CORS 
+requests
+psycopg2
+flask_oidc
+itsdangerous==2.0.1
