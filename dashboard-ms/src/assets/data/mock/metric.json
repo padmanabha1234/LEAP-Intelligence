@@ -26,8 +26,8 @@
       "orderBy": "5"
     },
     {
-      "programName": "UDISE+",
-      "tooltip": "Unified District Information System for Education",
+      "programName": "School Infrastructure",
+      "tooltip": "School Infrastructure for Education",
       "navigationUrl": "/udise",
       "imageUrl": "udise.png",
       "programID": "udise",
@@ -42,16 +42,16 @@
       "orderBy": "7"
     },
     {
-      "programName": "DIKSHA",
-      "tooltip": "Digital Infrastructure for Knowledge Sharing",
+      "programName": "Student Learning",
+      "tooltip": "Student Learning for Knowledge Sharing",
       "navigationUrl": "/diksha",
       "imageUrl": "diksha.png",
       "programID": "diksha",
       "orderBy": "8"
     },
     {
-      "programName": "NISHTHA",
-      "tooltip": "NISHTHA is a capacity building programme for \"Improving Quality of School Education through Integrated Teacher Training\". It aims to build competencies among all the teachers and school principals at the elementary stage.",
+      "programName": "Teacher Training",
+      "tooltip": "Teacher Training is a capacity building programme for \"Improving Quality of School Education through Integrated Teacher Training\". It aims to build competencies among all the teachers and school principals at the elementary stage.",
       "navigationUrl": "/nishtha",
       "imageUrl": "nishtha.png",
       "programID": "nishtha",
@@ -66,7 +66,7 @@
       "orderBy": "10"
     },
     {
-      "programName": "Student Progression",
+      "programName": "Student Progress",
       "tooltip": "This program details the compliance of schools in the state with UDISE infrastructure criteria.",
       "navigationUrl": "/school-progression",
       "imageUrl": "progression.jpeg",
